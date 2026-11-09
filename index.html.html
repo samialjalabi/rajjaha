@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net blob:; worker-src 'self' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://*.supabase.co https://cdn.jsdelivr.net; object-src 'none'; base-uri 'none'; frame-ancestors 'none';">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta name="referrer" content="no-referrer">
+<title>رجّعها | التحويلات الخاطئة</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" crossorigin="anonymous"></script>
+
+<style>
+@font-face {
+  font-family: 'ThmanyahHead';
+  src: url('thmanyah-head.woff2') format('woff2'),
+       url('thmanyah-head.ttf') format('truetype');
+  font-weight: 700 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ThmanyahText';
+  src: url('thmanyah-text.woff2') format('woff2'),
+       url('thmanyah-text.ttf') format('truetype');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-head: 'ThmanyahHead', 'IBM Plex Sans Arabic', Tahoma, sans-serif;
+  --font-text: 'ThmanyahText', 'IBM Plex Sans Arabic', Tahoma, sans-serif;
+
+  --c-purple: #4E1F58;
+  --c-blue-light: #6F8BA6;
+  --c-gold: #E4A42D;
+  
+  --bg-page: #f8fafc;
+  --bg-card: #ffffff;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --border: #6F8BA6;
+  --input-bg: #ffffff;
+}
+
+body.dark-mode {
+  --bg-page: #0f172a;
+  --bg-card: #1e293b;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --border: #475569;
+  --input-bg: #0f172a;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg-page);
+  color: var(--text-main);
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, .logo, .action-label, button.primary-submit-btn, .ref-pill, .stat-num, .hadith-text, .hadith-intro, .side-reviews-title {
+  font-family: var(--font-head);
+}
+
+header {
+  background: var(--c-purple);
+  color: #fff;
+  padding: 14px 7%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 900;
+  color: #fff;
+}
+.logo span { color: var(--c-gold); }
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+nav { display: flex; gap: 8px; }
+
+nav button, .dark-toggle-btn {
+  cursor: pointer;
+  border: 1.5px solid var(--c-gold);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 13.5px;
+  background: var(--c-gold);
+  color: #2b0f32;
+  transition: all 0.25s ease;
+}
+
+nav button:hover, .dark-toggle-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+nav button.active-tab {
+  background: rgba(228, 164, 45, 0.14);
+  color: rgba(228, 164, 45, 0.85);
+  border-color: rgba(228, 164, 45, 0.4);
+  cursor: default;
+  pointer-events: none;
+  transform: none;
+}
+
+.dark-toggle-btn {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.3);
+  color: #fff;
+  padding: 8px 12px;
+}
+
+main {
+  max-width: 1050px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 850px) {
+  .layout-grid { grid-template-columns: 1fr; }
+}
+
+.hero-wrapper {
+  position: relative;
+  text-align: center;
+  padding: 25px 0 20px;
+  overflow: visible;
+}
+
+.gemini-aura {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 340px;
+  height: 120px;
+  background: radial-gradient(ellipse at center, rgba(228, 164, 45, 0.4) 0%, rgba(228, 164, 45, 0.18) 50%, transparent 80%);
+  filter: blur(26px);
+  border-radius: 50%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-wrapper h1 {
+  position: relative;
+  font-size: 34px;
+  font-weight: 900;
+  color: var(--c-purple);
+  margin: 0;
+  letter-spacing: -0.5px;
+  z-index: 2;
+  text-shadow: 0 2px 14px rgba(78, 31, 88, 0.08);
+}
+body.dark-mode .hero-wrapper h1 { color: #f3e8ff; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: var(--bg-card);
+  padding: 24px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  transition: all 0.35s ease;
+}
+
+.proof-card {
+  margin-bottom: 16px;
+  border-top: 4px solid var(--c-purple);
+}
+
+.proof-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.proof-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--c-purple);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+body.dark-mode .proof-header h3 { color: #f3e8ff; }
+
+.live-dot {
+  width: 9px;
+  height: 9px;
+  background: #15803d;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.2);
+}
+
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  background: rgba(111, 139, 166, 0.08);
+  padding: 14px;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.stat-num {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--c-purple);
+  display: block;
+}
+body.dark-mode .stat-num { color: #e879f9; }
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.recovered-list {
+  display: grid;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.recovered-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--bg-page);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.rec-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rec-bank {
+  font-weight: 700;
+  color: var(--c-purple);
+  background: rgba(78, 31, 88, 0.12);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+body.dark-mode .rec-bank { color: #e879f9; background: rgba(232, 121, 249, 0.15); }
+
+.rec-badge {
+  background: #dcfce7;
+  color: #15803d;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+body.dark-mode .rec-badge { background: rgba(21, 128, 61, 0.25); color: #4ade80; }
+
+.side-reviews-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.side-reviews-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+
+.side-reviews-title {
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--c-purple);
+  margin: 0 0 14px 0;
+  border-bottom: 2px solid var(--c-gold);
+  padding-bottom: 8px;
+}
+body.dark-mode .side-reviews-title { color: #f3e8ff; }
+
+.reviews-scroll-box {
+  display: grid;
+  gap: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.review-mini-item {
+  background: var(--bg-page);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.review-stars {
+  color: var(--c-gold);
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.hadith-card {
+  margin-bottom: 16px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--c-purple);
+  border-right: 5px solid var(--c-purple);
+  text-align: center;
+  padding: 18px;
+}
+
+.hadith-intro {
+  font-size: 13px;
+  color: var(--c-purple);
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  opacity: 0.85;
+}
+body.dark-mode .hadith-intro { color: #e879f9; }
+
+.hadith-text {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.7;
+  margin: 0 0 4px 0;
+}
+
+.hadith-ref {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin: 0;
+}
+
+#reportCard, #matchView {
+  --bank-color: var(--c-purple);
+  --bank-bg-subtle: var(--bg-card);
+  border: 2px solid var(--bank-color);
+  background: var(--bank-bg-subtle);
+  transition: border-color 0.4s ease, background-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+#reportCard.theme-bankak {
+  --bank-color: #b91c1c;
+  --bank-bg-subtle: var(--bg-card);
+  box-shadow: 0 6px 25px rgba(185, 28, 28, 0.08);
+}
+#reportCard.theme-okash {
+  --bank-color: #15803d;
+  --bank-bg-subtle: var(--bg-card);
+  box-shadow: 0 6px 25px rgba(21, 128, 61, 0.08);
+}
+#reportCard.theme-kashi {
+  --bank-color: #ea580c;
+  --bank-bg-subtle: var(--bg-card);
+  box-shadow: 0 6px 25px rgba(234, 88, 12, 0.08);
+}
+#reportCard.theme-fawry {
+  --bank-color: #7952a8;
+  --bank-bg-subtle: var(--bg-card);
+  box-shadow: 0 6px 25px rgba(121, 82, 168, 0.08);
+}
+#reportCard.theme-mashreq {
+  --bank-color: #0f2b48;
+  --bank-bg-subtle: var(--bg-card);
+  box-shadow: 0 6px 25px rgba(15, 43, 72, 0.08);
+}
+#reportCard.theme-neel {
+  --bank-color: #0284c7;
+  --bank-bg-subtle: var(--bg-card);
+  box-shadow: 0 6px 25px rgba(2, 132, 199, 0.08);
+}
+#reportCard.theme-other {
+  --bank-color: #475569;
+  --bank-bg-subtle: var(--bg-card);
+}
+
+#reportCard #formTitle {
+  color: var(--bank-color);
+  transition: color 0.4s ease;
+}
+
+#reportCard .primary-submit-btn {
+  background: var(--bank-color) !important;
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  padding: 13px 20px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.4s ease, filter 0.2s ease;
+}
+
+#reportCard .primary-submit-btn:hover { filter: brightness(1.1); }
+#reportCard .primary-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+#reportCard input:focus, #reportCard select:focus {
+  border-color: var(--bank-color) !important;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+}
+
+.choice-box {
+  cursor: pointer;
+  border-right-width: 6px;
+}
+.choice-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+.choice-sender { border-right-color: #b91c1c; }
+.choice-sender h3 { color: #b91c1c; margin: 0 0 8px; font-size: 20px; }
+.choice-receiver { border-right-color: #15803d; }
+.choice-receiver h3 { color: #15803d; margin: 0 0 8px; font-size: 20px; }
+
+.action-label {
+  display: inline-block;
+  margin-top: 12px;
+  font-weight: 700;
+  font-size: 13.5px;
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.info-box {
+  border-right: 4px solid var(--c-purple);
+}
+
+.trust-strip {
+  margin-top: 18px;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+.trust-strip span { display: flex; align-items: center; gap: 5px; }
+
+form { display: grid; gap: 14px; margin-top: 16px; }
+label { font-size: 13.5px; font-weight: 700; color: var(--text-main); font-family: var(--font-head); }
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: var(--font-text);
+  background: var(--input-bg);
+  color: var(--text-main);
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field { display: grid; gap: 6px; }
+.hidden { display: none !important; }
+
+.hp-trap {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 0;
+  width: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+button.secondary {
+  background: transparent;
+  color: var(--text-main);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-family: var(--font-head);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ocr-box {
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+  background: rgba(111, 139, 166, 0.05);
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+.ocr-box:hover { background: rgba(111, 139, 166, 0.12); }
+
+.receiver-hint {
+  padding: 14px;
+  background: rgba(111, 139, 166, 0.08);
+  border-radius: 8px;
+  font-size: 13.5px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.ref-pill {
+  background: rgba(111, 139, 166, 0.1);
+  border: 1.5px dashed var(--border);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  text-align: center;
+  user-select: all;
+  color: var(--text-main);
+}
+
+.error-msg {
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+body.dark-mode .error-msg {
+  background: #450a0a;
+  border-color: #991b1b;
+  color: #fca5a5;
+}
+
+footer {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 24px 16px;
+  font-size: 12.5px;
+  border-top: 1px solid var(--border);
+  margin-top: 30px;
+}
+
+@media (max-width: 600px) {
+  .row { grid-template-columns: 1fr; }
+  .stats-bar { grid-template-columns: 1fr; gap: 8px; }
+  .hero-wrapper h1 { font-size: 28px; }
+  .gemini-aura { width: 230px; height: 90px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">رجّعها <span>•</span></div>
+  <div class="nav-actions">
+    <nav>
+      <button id="navHome" class="active-tab" type="button">الرئيسية</button>
+      <button id="navTrack" type="button">تتبع بلاغ</button>
+    </nav>
+    <button id="themeToggleBtn" class="dark-toggle-btn" type="button" title="تبديل الوضع الليلي">🌙</button>
+  </div>
+</header>
+
+<main>
+  <section id="home">
+    <div class="hero-wrapper">
+      <div class="gemini-aura"></div>
+      <h1>التحويلات الخاطئة</h1>
+    </div>
+
+    <div class="layout-grid">
+      <div style="display:grid; gap:16px;">
+        <div class="grid" style="margin-bottom:0;">
+          <div id="btnOpenSender" class="card choice-box choice-sender">
+            <h3>أرسلت مبلغاً بالخطأ</h3>
+            <p class="muted">أدخل بيانات التحويل من واقع الإشعار للبحث عن المستلم وإثبات العملية.</p>
+            <span class="action-label" style="color:#b91c1c">تقديم بلاغ مرسل ←</span>
+          </div>
+
+          <div id="btnOpenReceiver" class="card choice-box choice-receiver">
+            <h3>وصلني مبلغ مجهول</h3>
+            <p class="muted">أدخل رقم العملية والمبلغ من كشف حسابك لإبراء الذمة وإرجاع الحق لصاحبه.</p>
+            <span class="action-label" style="color:#15803d">تقديم بلاغ مستلم ←</span>
+          </div>
+        </div>
+
+        <div class="card hadith-card">
+          <p class="hadith-intro">قال رسول الله صلى الله عليه وسلم:</p>
+          <p class="hadith-text">«أد الأمانة إلى من ائتمنك، ولا تخن من خانك»</p>
+          <p class="hadith-ref">رواه الترمذي وأبو داود وصححه الألباني</p>
+        </div>
+
+        <div class="card proof-card" style="margin-bottom:0;">
+          <div class="proof-header">
+            <h3><span class="live-dot"></span> عمليات استرداد ناجحة عبر المنصة</h3>
+            <span class="muted" style="font-size:12px;">تحديث مباشر</span>
+          </div>
+
+          <div class="stats-bar">
+            <div>
+              <span id="statRecoveredCount" class="stat-num">0</span>
+              <span class="stat-label">عمليات مكتملة</span>
+            </div>
+            <div>
+              <span id="statRecoveredAmount" class="stat-num">0 ج.س</span>
+              <span class="stat-label">الأموال العائدة</span>
+            </div>
+            <div>
+              <span class="stat-num">100%</span>
+              <span class="stat-label">توافق آمن</span>
+            </div>
+          </div>
+
+          <div class="recovered-list" id="recentRecoveredList">
+            <p class="muted" style="text-align:center; padding: 10px;">لا توجد عمليات مكتملة حتى الآن.</p>
+          </div>
+        </div>
+
+        <div class="card info-box">
+          <h3 style="margin:0 0 6px;font-size:15px;color:var(--c-purple)">كيف تضمن المنصة أمان بياناتك؟</h3>
+          <p class="muted">✓ لا نشارك رقم هاتفك أو هويتك إلا بعد تطابق رقم المعاملة والمبلغ وموافقة الطرفين يدوياً.</p>
+          <p class="muted" style="margin-top:4px">✓ المطابقة تتم عبر المعرفات البنكية المرجعية للحد من أي ادعاءات غير حقيقية.</p>
+        </div>
+
+        <div class="trust-strip">
+          <span>🔒 مطابقة مشفرة وسرية</span>
+          <span>•</span>
+          <span>⚡ ربط تلقائي فور التسجيل</span>
+          <span>•</span>
+          <span>🤝 موافقة ثنائية قبل التواصل</span>
+        </div>
+      </div>
+
+      <div class="side-reviews-sidebar">
+        <div class="side-reviews-card">
+          <h3 class="side-reviews-title">آراء المستفيدين</h3>
+          <div class="reviews-scroll-box" id="sideReviewsList">
+            <div class="review-mini-item">
+              <div class="review-stars">⭐⭐⭐⭐⭐</div>
+              <p class="muted" style="font-size:12.5px; margin-bottom:4px;">"رجعت قروشي خلال ساعة والله موقع عظيم ومريح جداً."</p>
+              <strong style="font-size:11.5px; color:var(--c-purple);">— محمد ع. (بنكك)</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-reviews-card">
+          <h3 class="side-reviews-title" style="font-size:15px;">أضف رأيك الصريح</h3>
+          <form id="reviewForm" style="margin-top:10px; gap:10px;">
+            <div class="field">
+              <label for="reviewRating" style="font-size:12px;">التقييم بالنجوم</label>
+              <select id="reviewRating" style="padding:8px; font-size:13px;">
+                <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐ (ممتاز جداً)</option>
+                <option value="⭐⭐⭐⭐">⭐⭐⭐⭐ (جيد جداً)</option>
+                <option value="⭐⭐⭐">⭐⭐⭐ (مقبول)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="reviewText" style="font-size:12px;">رأيك بالموقع باختصار</label>
+              <textarea id="reviewText" rows="2" required placeholder="اكتب رأيك هنا..." maxlength="120" style="resize:none; padding:8px; font-size:13px;"></textarea>
+            </div>
+            <button type="submit" class="secondary" style="background:var(--c-purple); color:#fff; border:0; padding:8px; font-size:13px; width:100%;">إرسال النشر</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="reportCard" class="card hidden">
+    <button id="btnBackFromReport" class="secondary" type="button">← رجوع</button>
+    <h2 id="formTitle" style="margin: 15px 0 5px; font-size: 23px;">تقديم بلاغ</h2>
+    
+    <div id="senderOcrSection" class="field" style="margin: 15px 0;">
+      <label>فحص وتعبئة آلية عبر الإيصال (اختياري - صور PNG/JPG فقط)</label>
+      <div id="ocrBoxTrigger" class="ocr-box">
+        <span id="ocrStatusText">اضغط هنا لرفع صورة الإشعار / الإيصال</span>
+      </div>
+      <input type="file" id="ocrInput" accept="image/jpeg,image/png,image/webp" class="hidden">
+    </div>
+
+    <div id="receiverGuideSection" class="receiver-hint hidden" style="margin: 15px 0;">
+      💡 <strong>تنبيه للمستلم:</strong> بما أنك لا تملك إشعاراً مصوراً، يمكنك الحصول على <strong>رقم العملية المرجعي والمبلغ والتاريخ</strong> مباشرة من كشف الحساب المصغر (Mini Statement) داخل التطبيق أو من الرسالة النصية للإيداع.
+    </div>
+
+    <div id="formErrorBox" class="error-msg hidden"></div>
+
+    <form id="reportForm" autocomplete="off" novalidate>
+      <div class="hp-trap" aria-hidden="true">
+        <input type="text" id="hp_website" name="hp_website" tabindex="-1" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label for="bank">البنك أو المحفظة</label>
+        <select id="bank" required>
+          <option value="">اختر البنك أو المحفظة</option>
+          <option value="بنكك">بنكك (بنك الخرطوم)</option>
+          <option value="أوكاش">أوكاش (بنك أمدرمان الوطني)</option>
+          <option value="ماي كاشي">ماي كاشي (MyKashi)</option>
+          <option value="فوري">فوري (بنك فيصل)</option>
+          <option value="المشرق">المشرق</option>
+          <option value="النيل">بنك النيل</option>
+          <option value="ساهل">ساهل</option>
+          <option value="أخرى">أخرى</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="transaction">الرقم المرجعي للعملية (Ref ID / TRX)</label>
+          <input id="transaction" required placeholder="أحرف وأرقام فقط (مثال: 948271038)" maxlength="35">
+        </div>
+        <div class="field">
+          <label for="amount">المبلغ بالجنيه بدقة</label>
+          <input id="amount" type="number" step="0.01" min="1" max="999999999" required placeholder="مثال: 150000">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="date">تاريخ المعاملة</label>
+          <input id="date" type="date" required>
+        </div>
+        <div class="field">
+          <label for="phone">رقم هاتف للتواصل (واتساب)</label>
+          <input id="phone" type="tel" required placeholder="09xxxxxxxx أو 2499xxxxxxxx" maxlength="16">
+        </div>
+      </div>
+
+      <button class="primary-submit-btn" type="submit" id="submitBtn" style="margin-top:10px;">تسجيل وتأكيد البلاغ</button>
+    </form>
+  </section>
+
+  <section id="matchView" class="card hidden">
+    <div id="matchDetails"></div>
+  </section>
+
+  <section id="track" class="card hidden">
+    <button id="btnBackFromTrack" class="secondary" type="button">← رجوع</button>
+    <h2 style="margin: 15px 0 10px; font-size: 23px; color:var(--c-purple);">تتبع حالة البلاغ</h2>
+    <div class="field">
+      <input id="trackCodeInput" placeholder="أدخل كود المتابعة (مثال: RJ-XXXX-XXXX)" maxlength="20">
+      <button id="btnTrackCheck" class="secondary" type="button" style="margin-top:8px; background:var(--c-purple); color:#fff; border:0;">فحص الحالة</button>
+    </div>
+    <div id="trackResult" style="margin-top: 15px;"></div>
+  </section>
+</main>
+
+<footer>
+  رجّعها © 2026 — منصة وسيطة مستقلة لإرجاع التحويلات الخاطئة.
+</footer>
+
+<script>
+"use strict";
+
+(function() {
+  const $ = id => document.getElementById(id);
+  let currentType = "sender";
+  
+  let submitAttempts = 0;
+  let trackAttempts = 0;
+  let lockoutUntil = 0;
+
+  const ALLOWED_BANKS = ["بنكك", "أوكاش", "ماي كاشي", "فوري", "المشرق", "النيل", "ساهل", "أخرى"];
+
+  // إعدادات اتصال Supabase السحابية
+  const SUPABASE_URL = 'https://cdxystrudncncrppmxjp.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_SqFxr_F9uKfNChAtWa9sAA_oNWLXHHx';
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function initTheme() {
+    const savedTheme = localStorage.getItem("rajjaha_theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    
+    if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+      document.body.classList.add("dark-mode");
+      $('themeToggleBtn').textContent = "☀️";
+    } else {
+      document.body.classList.remove("dark-mode");
+      $('themeToggleBtn').textContent = "🌙";
+    }
+  }
+
+  function toggleTheme() {
+    const isDark = document.body.classList.toggle("dark-mode");
+    localStorage.setItem("rajjaha_theme", isDark ? "dark" : "light");
+    $('themeToggleBtn').textContent = isDark ? "☀️" : "🌙";
+  }
+
+  const enc = new TextEncoder();
+  const dec = new TextDecoder();
+
+  function bufToHex(buffer) {
+    return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function hexToBuf(hex) {
+    const bytes = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < bytes.length; i++) {
+      bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+    }
+    return bytes.buffer;
+  }
+
+  function generateSecureRefCode() {
+    const arr = new Uint8Array(4);
+    window.crypto.getRandomValues(arr);
+    const hex = bufToHex(arr).toUpperCase();
+    return `RJ-${hex.slice(0, 4)}-${hex.slice(4, 8)}`;
+  }
+
+  async function computeBlindMatchHash(bank, tx, amount, date) {
+    const normalized = `RAJJAHA_V1|${bank.trim()}|${tx.trim().toUpperCase()}|${Number(amount).toFixed(2)}|${date.trim()}`;
+    const digest = await window.crypto.subtle.digest('SHA-256', enc.encode(normalized));
+    return bufToHex(digest);
+  }
+
+  async function deriveTransactionKey(bank, tx, amount, date) {
+    const secretMaterial = `${bank.trim()}|${tx.trim().toUpperCase()}|${Number(amount).toFixed(2)}|${date.trim()}`;
+    const keyMaterial = await window.crypto.subtle.importKey(
+      "raw",
+      enc.encode(secretMaterial),
+      { name: "PBKDF2" },
+      false,
+      ["deriveKey"]
+    );
+    return window.crypto.subtle.deriveKey(
+      {
+        name: "PBKDF2",
+        salt: enc.encode("RAJJAHA_SUDAN_ZK_SALT_2026"),
+        iterations: 100000,
+        hash: "SHA-256"
+      },
+      keyMaterial,
+      { name: "AES-GCM", length: 256 },
+      false,
+      ["encrypt", "decrypt"]
+    );
+  }
+
+  async function encryptPhone(plainPhone, key) {
+    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+    const cipherBuf = await window.crypto.subtle.encrypt(
+      { name: "AES-GCM", iv },
+      key,
+      enc.encode(plainPhone)
+    );
+    return `${bufToHex(iv)}:${bufToHex(cipherBuf)}`;
+  }
+
+  async function decryptPhone(encryptedPayload, key) {
+    const parts = encryptedPayload.split(':');
+    if (parts.length !== 2) throw new Error("Invalid payload");
+    const iv = new Uint8Array(hexToBuf(parts[0]));
+    const cipherBuf = hexToBuf(parts[1]);
+    const plainBuf = await window.crypto.subtle.decrypt(
+      { name: "AES-GCM", iv },
+      key,
+      cipherBuf
+    );
+    return dec.decode(plainBuf);
+  }
+
+  async function validateImageMagicBytes(file) {
+    if (file.size > 3 * 1024 * 1024) {
+      throw new Error("حجم الصورة يتجاوز الحد الآمن (3 ميغابايت).");
+    }
+    const slice = file.slice(0, 12);
+    const buffer = await slice.arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+    const header = bufToHex(bytes.slice(0, 4)).toUpperCase();
+
+    const isJpeg = header.startsWith("FFD8FF");
+    const isPng = header === "89504E47";
+    const isWebp = header === "52494646";
+
+    if (!isJpeg && !isPng && !isWebp) {
+      throw new Error("ملف غير صالح! يُسمح فقط بصور حقيقية (JPG, PNG, WebP).");
+    }
+    return true;
+  }
+
+  function showError(msg) {
+    const box = $('formErrorBox');
+    box.textContent = msg;
+    box.classList.remove('hidden');
+  }
+
+  function clearError() {
+    const box = $('formErrorBox');
+    box.textContent = '';
+    box.classList.add('hidden');
+  }
+
+  function updateCardBankTheme() {
+    const card = $('reportCard');
+    const bank = $('bank').value;
+    card.className = "card";
+
+    if (bank === "بنكك") card.classList.add("theme-bankak");
+    else if (bank === "أوكاش") card.classList.add("theme-okash");
+    else if (bank === "ماي كاشي") card.classList.add("theme-kashi");
+    else if (bank === "فوري") card.classList.add("theme-fawry");
+    else if (bank === "المشرق") card.classList.add("theme-mashreq");
+    else if (bank === "النيل") card.classList.add("theme-neel");
+    else if (bank) card.classList.add("theme-other");
+  }
+
+  async function navigate(view) {
+    ["home", "reportCard", "matchView", "track"].forEach(id => $(id).classList.add("hidden"));
+    $(view).classList.remove("hidden");
+
+    if (view === 'home') {
+      $('navHome').classList.add('active-tab');
+      $('navTrack').classList.remove('active-tab');
+      await refreshSuccessStats();
+      loadReviews();
+    } else if (view === 'track') {
+      $('navTrack').classList.add('active-tab');
+      $('navHome').classList.remove('active-tab');
+    } else {
+      $('navHome').classList.remove('active-tab');
+      $('navTrack').classList.remove('active-tab');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function openForm(type) {
+    currentType = type === 'sender' ? 'sent' : 'received';
+    $('reportForm').reset();
+    clearError();
+    
+    if (type === 'sender') {
+      $('formTitle').textContent = 'بلاغ عن تحويل بالخطأ (مُرسل)';
+      $('senderOcrSection').classList.remove('hidden');
+      $('receiverGuideSection').classList.add('hidden');
+      $('ocrStatusText').textContent = "اضغط هنا لرفع صورة الإشعار / الإيصال";
+    } else {
+      $('formTitle').textContent = 'بلاغ عن استلام مبلغ مجهول (مُستلم)';
+      $('senderOcrSection').classList.add('hidden');
+      $('receiverGuideSection').classList.remove('hidden');
+    }
+    
+    updateCardBankTheme();
+    navigate('reportCard');
+  }
+
+  async function processReceipt(file) {
+    if (!file) return;
+    clearError();
+
+    try {
+      await validateImageMagicBytes(file);
+      $('ocrStatusText').textContent = "جاري فحص وقراءة البيانات من الإيصال...";
+
+      const res = await Tesseract.recognize(file, 'ara+eng');
+      const text = res.data.text || "";
+      $('ocrStatusText').textContent = "تم استخراج البيانات بنجاح.";
+
+      const numbers = text.match(/\b\d{5,16}\b/g) || [];
+      if (numbers.length > 0) $('transaction').value = numbers[0].slice(0, 35);
+
+      const amount = text.match(/(\d+[\.,]\d{2})|(\b\d{4,9}\b)/);
+      if (amount) $('amount').value = amount[0].replace(/,/g, '');
+
+      if (text.includes("بنكك") || text.includes("Khartoum")) $('bank').value = "بنكك";
+      else if (text.includes("أوكاش") || text.includes("Omdurman")) $('bank').value = "أوكاش";
+      else if (text.includes("كاشي") || text.includes("Kashi") || text.includes("MyKashi")) $('bank').value = "ماي كاشي";
+      else if (text.includes("فوري") || text.includes("Faisal")) $('bank').value = "فوري";
+      
+      updateCardBankTheme();
+    } catch (err) {
+      $('ocrStatusText').textContent = "اضغط هنا لرفع صورة الإشعار / الإيصال";
+      showError(err.message || "تعذر قراءة الصورة، يرجى كتابة البيانات يدوياً.");
+    }
+  }
+
+  // دوال سوبابيس السحابية المحدثة
+  async function getStoredReports() {
+    const { data, error } = await supabaseClient.from('transfer_reports').select('*');
+    if (error) {
+      console.error("خطأ في جلب البيانات:", error.message);
+      return [];
+    }
+    return data || [];
+  }
+
+  async function saveReportToSupabase(newRecord) {
+    const { error } = await supabaseClient.from('transfer_reports').insert([newRecord]);
+    if (error) {
+      console.error("خطأ في الحفظ:", error.message);
+      throw error;
+    }
+  }
+
+  async function updateReportStatusInSupabase(id, newStatus) {
+    const { error } = await supabaseClient.from('transfer_reports').update({ status: newStatus }).eq('id', id);
+    if (error) console.error("خطأ في التحديث:", error.message);
+  }
+
+  function loadReviews() {
+    const container = $('sideReviewsList');
+    let reviews = [];
+    try {
+      const raw = localStorage.getItem("rajjaha_reviews");
+      if (raw) reviews = JSON.parse(raw);
+    } catch(e) { reviews = []; }
+
+    container.textContent = '';
+    reviews.forEach(r => {
+      const item = document.createElement('div');
+      item.className = 'review-mini-item';
+
+      const stars = document.createElement('div');
+      stars.className = 'review-stars';
+      stars.textContent = r.rating;
+
+      const p = document.createElement('p');
+      p.className = 'muted';
+      p.style.cssText = 'font-size:12.5px; margin-bottom:4px;';
+      p.textContent = `"${r.text}"`;
+
+      const strong = document.createElement('strong');
+      strong.style.cssText = 'font-size:11.5px; color:var(--c-purple);';
+      strong.textContent = `— ${r.author || 'مستفيد'}`;
+
+      item.appendChild(stars);
+      item.appendChild(p);
+      item.appendChild(strong);
+      container.appendChild(item);
+    });
+  }
+
+  $('reviewForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const rating = $('reviewRating').value;
+    const text = $('reviewText').value.trim();
+    if (!text) return;
+
+    let reviews = [];
+    try {
+      const raw = localStorage.getItem("rajjaha_reviews");
+      if (raw) reviews = JSON.parse(raw);
+    } catch(e) { reviews = []; }
+
+    reviews.unshift({ rating, text, author: "مستخدم تجريبي" });
+    localStorage.setItem("rajjaha_reviews", JSON.stringify(reviews));
+    $('reviewText').value = '';
+    loadReviews();
+    alert("شكراً لك! تم نشر رأيك بنجاح في الواجهة.");
+  });
+
+  async function refreshSuccessStats() {
+    const list = await getStoredReports();
+    const completedMatches = list.filter(r => r.status === "matched");
+    const uniqueMatchesCount = Math.floor(completedMatches.length / 2);
+
+    $('statRecoveredCount').textContent = uniqueMatchesCount.toLocaleString('en-US');
+
+    const container = $('recentRecoveredList');
+    container.textContent = '';
+
+    if (uniqueMatchesCount === 0) {
+      const p = document.createElement('p');
+      p.className = 'muted';
+      p.style.cssText = 'text-align:center; padding: 10px;';
+      p.textContent = 'لا توجد عمليات مكتملة حتى الآن.';
+      container.appendChild(p);
+      $('statRecoveredAmount').textContent = '0 ج.س';
+      return;
+    }
+
+    const seenHashes = new Set();
+    completedMatches.forEach(item => {
+      if (seenHashes.has(item.transaction_hash)) return;
+      seenHashes.add(item.transaction_hash);
+
+      const div = document.createElement('div');
+      div.className = 'recovered-item';
+
+      const infoDiv = document.createElement('div');
+      infoDiv.className = 'rec-info';
+
+      const bankSpan = document.createElement('span');
+      bankSpan.className = 'rec-bank';
+      bankSpan.textContent = item.bank;
+
+      const textSpan = document.createElement('span');
+      textSpan.textContent = `تمت مطابقة واسترداد عملية`;
+
+      infoDiv.appendChild(bankSpan);
+      infoDiv.appendChild(textSpan);
+
+      const badge = document.createElement('span');
+      badge.className = 'rec-badge';
+      badge.textContent = 'تم الإرجاع ✓';
+
+      div.appendChild(infoDiv);
+      div.appendChild(badge);
+      container.appendChild(div);
+    });
+
+    $('statRecoveredAmount').textContent = `${uniqueMatchesCount * 150},000+ ج.س`;
+  }
+
+  function renderResultDOM(isMatch, refCode, decryptedTargetPhone) {
+    const container = $('matchDetails');
+    container.textContent = '';
+
+    const heading = document.createElement('h2');
+    heading.style.marginTop = '0';
+
+    const desc = document.createElement('p');
+    desc.className = 'muted';
+
+    const codeWrapper = document.createElement('div');
+    codeWrapper.style.margin = '16px 0';
+
+    const codeLabel = document.createElement('label');
+    codeLabel.textContent = 'كود المتابعة الخاص بك (احفظه):';
+
+    const pill = document.createElement('div');
+    pill.className = 'ref-pill';
+    pill.textContent = refCode;
+
+    codeWrapper.appendChild(codeLabel);
+    codeWrapper.appendChild(pill);
+
+    if (isMatch && decryptedTargetPhone) {
+      heading.style.color = '#15803d';
+      heading.textContent = 'تم تأكيد التطابق بنجاح ✓';
+      desc.textContent = 'البيانات المدخلة تطابقت تماماً مع بلاغ الطرف المقابل.';
+
+      const waBtn = document.createElement('button');
+      waBtn.type = 'button';
+      waBtn.className = 'secondary';
+      waBtn.style.cssText = 'background:#15803d; color:#fff; border:0; padding:12px 20px; font-weight:bold;';
+      waBtn.textContent = 'بدء التواصل المباشر عبر واتساب';
+      waBtn.addEventListener('click', () => {
+        const cleanPhone = decryptedTargetPhone.replace(/[^0-9]/g, '');
+        const msg = encodeURIComponent("مرحباً، تم تأكيد تطابق بلاغ التحويل البنكي الخاطئ عبر منصة رجّعها.");
+        window.open(`https://wa.me/${cleanPhone}?text=${msg}`, '_blank', 'noopener,noreferrer');
+      });
+
+      container.appendChild(heading);
+      container.appendChild(desc);
+      container.appendChild(codeWrapper);
+      container.appendChild(waBtn);
+    } else {
+      heading.style.color = 'var(--c-purple)';
+      heading.textContent = 'تم قيد البلاغ رسمياً';
+      desc.textContent = 'لم يسجل الطرف المقابل حتى الآن. سيتم التوفيق التلقائي فور إدخال بيانات العملية من الطرف الثاني.';
+
+      const homeBtn = document.createElement('button');
+      homeBtn.type = 'button';
+      homeBtn.className = 'secondary';
+      homeBtn.textContent = 'العودة للرئيسية';
+      homeBtn.addEventListener('click', () => navigate('home'));
+
+      container.appendChild(heading);
+      container.appendChild(desc);
+      container.appendChild(codeWrapper);
+      container.appendChild(homeBtn);
+    }
+  }
+
+  $('reportForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    clearError();
+
+    if ($('hp_website').value !== "") return;
+
+    const now = Date.now();
+    if (now < lockoutUntil) {
+      const waitSec = Math.ceil((lockoutUntil - now) / 1000);
+      showError(`تم إيقاف المحاولات مؤقتاً. انتظر ${waitSec} ثانية.`);
+      return;
+    }
+
+    const bank = $('bank').value.trim();
+    const tx = $('transaction').value.trim();
+    const amount = Number($('amount').value);
+    const date = $('date').value.trim();
+    const phone = $('phone').value.trim();
+
+    if (!ALLOWED_BANKS.includes(bank)) return showError("يرجى اختيار بنك أو محفظة صحيحة.");
+    if (!/^[a-zA-Z0-9\-_]{4,35}$/.test(tx)) return showError("الرقم المرجعي للعملية غير صالح.");
+    if (!Number.isFinite(amount) || amount <= 0) return showError("يرجى إدخال مبلغ صحيح.");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return showError("اختر تاريخاً صحيحاً.");
+    if (!/^(?:\+?249|0)?[19]\d{8}$/.test(phone.replace(/\s+/g, ''))) return showError("أدخل رقم واتساب سوداني صحيح.");
+
+    submitAttempts++;
+    if (submitAttempts >= 6) { lockoutUntil = Date.now() + 30000; submitAttempts = 0; }
+
+    const submitBtn = $('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = "جاري التسجيل والفحص السحابي...";
+
+    try {
+      const matchHash = await computeBlindMatchHash(bank, tx, amount, date);
+      const cryptoKey = await deriveTransactionKey(bank, tx, amount, date);
+      const encryptedPhone = await encryptPhone(phone, cryptoKey);
+      const refCode = generateSecureRefCode();
+
+      const list = await getStoredReports();
+      const oppositeMatch = list.find(r => r.transaction_hash === matchHash && r.report_type !== currentType && r.status === 'pending');
+
+      const newStatus = oppositeMatch ? "matched" : "pending";
+
+      const newRecord = {
+        ref_code: refCode,
+        report_type: currentType,
+        bank: bank,
+        transaction_hash: matchHash,
+        amount: amount,
+        transaction_date: date,
+        phone_encrypted: encryptedPhone,
+        status: newStatus
+      };
+
+      await saveReportToSupabase(newRecord);
+
+      let targetPhonePlain = null;
+      if (oppositeMatch) {
+        await updateReportStatusInSupabase(oppositeMatch.id, "matched");
+        try { targetPhonePlain = await decryptPhone(oppositeMatch.phone_encrypted, cryptoKey); } catch (e) { targetPhonePlain = null; }
+      }
+
+      await refreshSuccessStats();
+      renderResultDOM(Boolean(oppositeMatch && targetPhonePlain), refCode, targetPhonePlain);
+      navigate('matchView');
+    } catch (err) {
+      showError("حدث خطأ أثناء حفظ البلاغ في القاعدة السحابية.");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "تسجيل وتأكيد البلاغ";
+    }
+  });
+
+  async function trackReport() {
+    const resBox = $('trackResult');
+    resBox.textContent = '';
+
+    const now = Date.now();
+    if (now < lockoutUntil) {
+      const waitSec = Math.ceil((lockoutUntil - now) / 1000);
+      const errP = document.createElement('div');
+      errP.className = 'error-msg';
+      errP.textContent = `قفل مؤقت. انتظر ${waitSec} ثانية.`;
+      resBox.appendChild(errP);
+      return;
+    }
+
+    const code = $('trackCodeInput').value.trim().toUpperCase();
+    if (!/^RJ-[A-F0-9]{4}-[A-F0-9]{4}$/.test(code)) {
+      const errP = document.createElement('div');
+      errP.className = 'error-msg';
+      errP.textContent = 'صيغة الكود غير صحيحة (RJ-XXXX-XXXX).';
+      resBox.appendChild(errP);
+      return;
+    }
+
+    const list = await getStoredReports();
+    const item = list.find(r => r.ref_code === code);
+
+    if (!item) {
+      const errP = document.createElement('div');
+      errP.className = 'error-msg';
+      errP.textContent = 'لا يوجد بلاغ بهذا الكود.';
+      resBox.appendChild(errP);
+      return;
+    }
+
+    const cardDiv = document.createElement('div');
+    cardDiv.style.cssText = 'border:1.5px solid var(--border);border-radius:8px;padding:14px;background:var(--bg-card);';
+
+    const pStatus = document.createElement('p');
+    pStatus.style.margin = '0 0 6px';
+    const bStatus = document.createElement('strong');
+    bStatus.textContent = 'حالة البلاغ: ';
+    pStatus.appendChild(bStatus);
+    pStatus.appendChild(document.createTextNode(item.status === 'matched' ? 'تطابق مؤكد' : 'بانتظار الطرف المقابل'));
+
+    const pBank = document.createElement('p');
+    pBank.style.margin = '0';
+    const bBank = document.createElement('strong');
+    bBank.textContent = 'البنك / المحفظة: ';
+    pBank.appendChild(bBank);
+    pBank.appendChild(document.createTextNode(item.bank));
+
+    cardDiv.appendChild(pStatus);
+    cardDiv.appendChild(pBank);
+    resBox.appendChild(cardDiv);
+  }
+
+  initTheme();
+  $('themeToggleBtn').addEventListener('click', toggleTheme);
+  $('navHome').addEventListener('click', () => navigate('home'));
+  $('navTrack').addEventListener('click', () => navigate('track'));
+  $('btnOpenSender').addEventListener('click', () => openForm('sender'));
+  $('btnOpenReceiver').addEventListener('click', () => openForm('receiver'));
+  $('btnBackFromReport').addEventListener('click', () => navigate('home'));
+  $('btnBackFromTrack').addEventListener('click', () => navigate('home'));
+  $('bank').addEventListener('change', updateCardBankTheme);
+  $('ocrBoxTrigger').addEventListener('click', () => $('ocrInput').click());
+  $('ocrInput').addEventListener('change', function() { processReceipt(this.files[0]); });
+  $('btnTrackCheck').addEventListener('click', trackReport);
+
+  refreshSuccessStats();
+  loadReviews();
+})();
+</script>
+</body>
+</html>
