@@ -2,284 +2,476 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>رجّعها | التحويلات الخاطئة</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://*.supabase.co https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com https://cdn.tailwindcss.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net blob:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:;">
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-  
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            appbg: '#121220',
-            cardbg: '#1e1e2d',
-            inputbg: '#161622',
-          }
-        }
-      }
-    }
-  </script>
-  
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://*.supabase.co https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net blob:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:;">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="no-referrer">
+  <title>رجّعها | منصة التحويلات الخاطئة</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" crossorigin="anonymous"></script>
+
   <style>
-    body { font-family: 'Tajawal', sans-serif; background-color: #121220; color: #f8fafc; overflow-x: hidden; }
-    .view-section { display: none; animation: fadeIn 0.3s ease; }
-    .view-section.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-  </style>
-
-  <!-- كود تشغيل الواجهة (مفصول هنا لضمان عمل الأزرار دائماً) -->
-  <script>
-    function showView(viewId) {
-      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-      const err = document.getElementById('errorAlert');
-      const succ = document.getElementById('successAlert');
-      if(err) err.classList.add('hidden');
-      if(succ) succ.classList.add('hidden');
-      document.getElementById(`view-${viewId}`).classList.add('active');
+    :root {
+      --primary: #c93b2b;
+      --primary-hover: #b03224;
+      --bg-page: #0f172a;
+      --bg-card: #1e293b;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #475569;
+      --input-bg: #0f172a;
+      --success: #10b981;
+      --whatsapp: #25d366;
+      --whatsapp-hover: #1ebd5b;
+      --font-family: 'IBM Plex Sans Arabic', sans-serif;
     }
-  </script>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-family);
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .menu-btn {
+      width: 100%;
+      padding: 16px;
+      margin-bottom: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+
+    .menu-btn:hover {
+      background: rgba(201, 59, 43, 0.12);
+      border-color: var(--primary);
+    }
+
+    .btn-back {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
+      color: #cbd5e1;
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    .view-section {
+      display: none;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      color: #fff;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #cbd5e1;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+    }
+
+    .ocr-box {
+      border: 2px dashed #475569;
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      background: rgba(15, 23, 42, 0.6);
+      margin-bottom: 18px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .ocr-box input[type="file"] {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .ocr-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .ocr-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .ocr-status {
+      display: none;
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .ocr-status.processing {
+      display: block;
+      color: #f59e0b;
+    }
+
+    .ocr-status.success {
+      display: block;
+      color: var(--success);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .btn-submit:hover {
+      background: var(--primary-hover);
+    }
+
+    .alert {
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .alert-error {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+    }
+
+    .alert-success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--success);
+      color: #6ee7b7;
+    }
+
+    .result-card {
+      margin-top: 18px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .result-label {
+      color: var(--text-muted);
+    }
+
+    .result-value {
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .badge-match {
+      padding: 4px 10px;
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid var(--success);
+      color: #6ee7b7;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-pending {
+      padding: 4px 10px;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid #f59e0b;
+      color: #fcd34d;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .matched-box {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--border);
+      text-align: center;
+    }
+
+    .matched-box p {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-bottom: 12px;
+    }
+
+    .btn-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px;
+      background: var(--whatsapp);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .btn-whatsapp:hover {
+      background: var(--whatsapp-hover);
+    }
+
+    .footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+    }
+  </style>
 </head>
-<body class="min-h-screen pb-16">
+<body>
 
-  <nav class="border-b border-gray-800 bg-[#1e1e2d]/50 p-4 mb-8">
-    <div class="max-w-6xl mx-auto flex justify-between items-center px-2">
-      <div class="text-2xl font-bold text-white tracking-wide">رجّع<span class="text-purple-500">ها</span></div>
-    </div>
-  </nav>
-
-  <div class="max-w-5xl mx-auto px-4">
-    
-    <div id="errorAlert" class="hidden bg-red-500/10 border border-red-500/50 text-red-300 p-4 rounded-xl mb-6 text-sm"></div>
-    <div id="successAlert" class="hidden bg-emerald-500/10 border border-emerald-500/50 text-emerald-300 p-4 rounded-xl mb-6 text-sm"></div>
-
-    <!-- الشاشة الرئيسية -->
-    <div id="view-home" class="view-section active">
-      <div class="bg-cardbg border border-gray-700/60 p-4 rounded-2xl text-center mb-8 shadow-lg">
-        <p class="text-gray-300 font-medium italic">«أَدِّ الأَمَانَةَ إِلَى مَنِ ائْتَمَنَكَ، وَلا تَخُنْ مَنْ خَانَكَ»</p>
-      </div>
-
-      <h1 class="text-3xl font-bold text-center text-white mb-8">التحويلات الخاطئة</h1>
-
-      <div class="flex flex-col lg:flex-row gap-6">
-        <div class="w-full lg:w-2/3 space-y-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div onclick="showView('sender')" class="bg-cardbg border border-gray-700 rounded-2xl p-6 cursor-pointer hover:border-red-500 transition-colors shadow-lg group">
-              <h3 class="text-red-400 font-bold text-xl mb-2 group-hover:text-red-300">أرسلت مبلغاً بالخطأ</h3>
-              <p class="text-gray-400 text-sm leading-relaxed">إذا قمت بتحويل مبلغ مالي بالخطأ إلى حساب شخص آخر وترغب في استرجاعه.</p>
-            </div>
-            <div onclick="showView('receiver')" class="bg-cardbg border border-gray-700 rounded-2xl p-6 cursor-pointer hover:border-emerald-500 transition-colors shadow-lg group">
-              <h3 class="text-emerald-400 font-bold text-xl mb-2 group-hover:text-emerald-300">وصلني مبلغ مجهول</h3>
-              <p class="text-gray-400 text-sm leading-relaxed">إذا وصلتك رسالة بنكية تفيد بإيداع مبلغ مجهول في حسابك وترغب في إرجاعه.</p>
-            </div>
-          </div>
-          
-          <div onclick="showView('track')" class="bg-cardbg border border-gray-700 rounded-2xl p-6 cursor-pointer hover:border-purple-500 transition-colors shadow-lg group">
-            <h3 class="text-purple-400 font-bold text-xl mb-2 group-hover:text-purple-300">تتبع حالة البلاغ والمطابقة</h3>
-            <p class="text-gray-400 text-sm leading-relaxed">أدخل كود المتابعة لمعرفة حالة بلاغك والتأكد من وجود مطابقة للحصول على رقم التواصل.</p>
-          </div>
-
-          <div>
-            <h4 class="text-white font-bold text-lg mb-4 mt-2">إحصائيات المنصة</h4>
-            <div class="grid grid-cols-3 gap-4">
-              <div class="bg-cardbg border border-gray-700 rounded-xl p-4 text-center shadow-md">
-                <div class="text-purple-400 font-bold text-xl md:text-2xl">100%</div>
-                <div class="text-gray-400 text-xs md:text-sm mt-1">نسبة المطابقة</div>
-              </div>
-              <div class="bg-cardbg border border-gray-700 rounded-xl p-4 text-center shadow-md">
-                <div class="text-emerald-400 font-bold text-xl md:text-2xl">0 SDG</div>
-                <div class="text-gray-400 text-xs md:text-sm mt-1">مبالغ مرجعة</div>
-              </div>
-              <div class="bg-cardbg border border-gray-700 rounded-xl p-4 text-center shadow-md">
-                <div class="text-blue-400 font-bold text-xl md:text-2xl">0</div>
-                <div class="text-gray-400 text-xs md:text-sm mt-1">بلاغات نشطة</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="w-full lg:w-1/3">
-          <div class="bg-cardbg border border-gray-700 rounded-2xl p-6 shadow-lg h-full">
-            <div class="flex justify-between items-center mb-6">
-              <h3 class="text-white font-bold text-lg">آراء المستفيدين</h3>
-              <span class="text-yellow-400 text-sm">★★★★★</span>
-            </div>
-            <div class="space-y-4">
-              <div class="bg-[#191928] p-4 rounded-xl border border-gray-700/50">
-                <div class="flex justify-between items-center mb-2">
-                  <span class="text-sm font-bold text-white">عمر عثمان</span>
-                  <span class="text-yellow-400 text-xs tracking-widest">★★★★★</span>
-                </div>
-                <p class="text-gray-400 text-xs leading-relaxed">«حولت مبلغ بالخطأ لشخص ما بعرفه، والحمد لله سجلت هنا وتطابق البلاغ وتواصلنا ورجع لي القروش. جزاكم الله خير.»</p>
-              </div>
-              <div class="bg-[#191928] p-4 rounded-xl border border-gray-700/50">
-                <div class="flex justify-between items-center mb-2">
-                  <span class="text-sm font-bold text-white">أحمد البدوي</span>
-                  <span class="text-yellow-400 text-xs tracking-widest">★★★★★</span>
-                </div>
-                <p class="text-gray-400 text-xs leading-relaxed">«وصلني إشعار تحويل بمبلغ مجهول، نزلت بلاغ مستلم في الموقع وتواصلت مع صاحب القروش وأبرأت ذمتي.»</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+  <div class="container">
+    <div class="header">
+      <h1>رجّعها</h1>
+      <p>منصة وسيطة مستقلة لإرجاع التحويلات الخاطئة</p>
     </div>
 
-    <!-- شاشة المُرسل -->
-    <div id="view-sender" class="view-section">
-      <div class="max-w-2xl mx-auto">
-        <div class="flex justify-between items-center mb-6">
-          <h2 class="text-2xl font-bold text-red-400">بلاغ عن تحويل بالخطأ (مُرسل)</h2>
-          <button onclick="showView('home')" class="text-gray-300 hover:text-white flex items-center gap-1 text-sm bg-cardbg px-4 py-2 rounded-lg border border-gray-700 transition">رجوع →</button>
-        </div>
-        <div class="bg-cardbg border border-gray-700 rounded-2xl p-6 shadow-2xl">
-          
-          <div class="mb-6 border-2 border-dashed border-gray-600 bg-[#191928] rounded-xl p-6 text-center cursor-pointer hover:border-red-500 transition-colors relative">
-            <input type="file" id="receiptUpload" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/png, image/jpeg, image/jpg">
-            <p class="text-gray-200 font-bold text-sm mb-1">اسحب صورة الإيصال هنا أو اضغط لاختيار الإيصال</p>
-            <div id="ocrProgressWrap" class="hidden mt-3 h-1.5 w-full bg-gray-700 rounded-full overflow-hidden">
-              <div id="ocrProgressBar" class="h-full bg-red-500 w-0 transition-all duration-300"></div>
-            </div>
-            <p id="ocrStatus" class="text-xs text-gray-400 mt-2">فحص وتعبئة آلية (اختياري)</p>
-          </div>
+    <div class="card">
+      <div id="errorAlert" class="alert alert-error"></div>
+      <div id="successAlert" class="alert alert-success"></div>
 
-          <form onsubmit="handleFormSubmit(event, 'sent')" class="space-y-4">
-            <div>
-              <label class="block text-gray-300 text-sm font-medium mb-2">البنك أو المحفظة</label>
-              <select id="bank-sent" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 focus:border-red-500 transition" required>
-                <option value="بنكك (بنك الخرطوم)">بنكك (بنك الخرطوم)</option>
-                <option value="أو كاش (بنك أمدرمان الوطني)">أو كاش (بنك أمدرمان الوطني)</option>
-                <option value="فوري (بنك فيصل)">فوري (بنك فيصل)</option>
-                <option value="برافو (Bravo)">برافو (Bravo)</option>
-                <option value="المشرق (Blue Nile Mashreg)">المشرق (Blue Nile Mashreg)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-gray-300 text-sm font-medium mb-2">الرقم المرجعي للعملية (Ref ID / TRX)</label>
-              <input type="text" id="ref-sent" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 focus:border-red-500 transition" placeholder="مثال: 21141403837" required>
-            </div>
-            <div>
-              <label class="block text-gray-300 text-sm font-medium mb-2">المبلغ بالجنيه بدقة</label>
-              <input type="number" id="amt-sent" step="any" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 focus:border-red-500 transition" placeholder="مثال: 10000" required>
-            </div>
-            <div>
-              <label class="block text-gray-300 text-sm font-medium mb-2">تاريخ المعاملة</label>
-              <input type="date" id="date-sent" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 focus:border-red-500 transition" required>
-            </div>
-            <div>
-              <label class="block text-gray-300 text-sm font-medium mb-2">رقم هاتف للتواصل (واتساب)</label>
-              <input type="tel" id="phone-sent" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 focus:border-red-500 transition" placeholder="09xxxxxxxx" required>
-            </div>
-            <button type="submit" id="btnSub-sent" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-xl transition-colors mt-4">
-              تسجيل وتأكيد البلاغ
-            </button>
-          </form>
+      <!-- الشاشة الرئيسية -->
+      <div id="view-home" class="view-section active">
+        <button class="menu-btn" onclick="showView('sender')">
+          <span>🚨 بلاغ عن تحويل بالخطأ (مُرسل)</span>
+          <span>←</span>
+        </button>
+        <button class="menu-btn" onclick="showView('receiver')">
+          <span>📥 وصلتني أموال بالخطأ (مُستلم)</span>
+          <span>←</span>
+        </button>
+        <button class="menu-btn" onclick="showView('track')">
+          <span>🔍 تتبع حالة البلاغ والتطابق</span>
+          <span>←</span>
+        </button>
+      </div>
+
+      <!-- شاشة بلاغ مُرسل -->
+      <div id="view-sender" class="view-section">
+        <button class="btn-back" onclick="showView('home')">→ رجوع</button>
+        <div class="section-title">بلاغ عن تحويل بالخطأ (مُرسل)</div>
+
+        <div class="ocr-box" id="ocrBox">
+          <input type="file" id="receiptUpload" accept="image/png, image/jpeg, image/jpg">
+          <div class="ocr-title">فحص وتعبئة آلية عبر الإيصال (اختياري - صور PNG/JPG فقط)</div>
+          <div class="ocr-subtitle" id="ocrSub">اسحب صورة الإيصال هنا أو اضغط للاختيار</div>
+          <div id="ocrStatus" class="ocr-status"></div>
         </div>
+
+        <form onsubmit="handleFormSubmit(event, 'sent')">
+          <div class="form-group">
+            <label>البنك أو المحفظة</label>
+            <select id="bank-sent" required>
+              <option value="بنكك (بنك الخرطوم)">بنكك (بنك الخرطوم)</option>
+              <option value="أو كاش (بنك أمدرمان الوطني)">أو كاش (بنك أمدرمان الوطني)</option>
+              <option value="فوري (بنك فيصل)">فوري (بنك فيصل)</option>
+              <option value="برافو (Bravo)">برافو (Bravo)</option>
+              <option value="المشرق (Blue Nile Mashreg)">المشرق (Blue Nile Mashreg)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>الرقم المرجعي للعملية (Ref ID / TRX)</label>
+            <input type="text" id="ref-sent" placeholder="مثال: 21141403837" required>
+          </div>
+          <div class="form-group">
+            <label>المبلغ بالجنيه بدقة</label>
+            <input type="number" id="amt-sent" step="any" placeholder="مثال: 10000" required>
+          </div>
+          <div class="form-group">
+            <label>تاريخ المعاملة</label>
+            <input type="date" id="date-sent" required>
+          </div>
+          <div class="form-group">
+            <label>رقم هاتف للتواصل (واتساب)</label>
+            <input type="tel" id="phone-sent" placeholder="09xxxxxxxx أو 01xxxxxxxx" required>
+          </div>
+          <button type="submit" class="btn-submit" id="btnSub-sent">تسجيل وتأكيد البلاغ</button>
+        </form>
+      </div>
+
+      <!-- شاشة بلاغ مُستلم -->
+      <div id="view-receiver" class="view-section">
+        <button class="btn-back" onclick="showView('home')">→ رجوع</button>
+        <div class="section-title">وصلتني أموال بالخطأ (مُستلم)</div>
+
+        <form onsubmit="handleFormSubmit(event, 'received')">
+          <div class="form-group">
+            <label>البنك أو المحفظة</label>
+            <select id="bank-received" required>
+              <option value="بنكك (بنك الخرطوم)">بنكك (بنك الخرطوم)</option>
+              <option value="أو كاش (بنك أمدرمان الوطني)">أو كاش (بنك أمدرمان الوطني)</option>
+              <option value="فوري (بنك فيصل)">فوري (بنك فيصل)</option>
+              <option value="برافو (Bravo)">برافو (Bravo)</option>
+              <option value="المشرق (Blue Nile Mashreg)">المشرق (Blue Nile Mashreg)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>الرقم المرجعي للعملية المستلمة (Ref ID)</label>
+            <input type="text" id="ref-received" placeholder="الرقم المرجعي من رسالة البنك" required>
+          </div>
+          <div class="form-group">
+            <label>المبلغ المستلم بالجنيه</label>
+            <input type="number" id="amt-received" step="any" placeholder="المبلغ الذي وصلك" required>
+          </div>
+          <div class="form-group">
+            <label>تاريخ الاستلام</label>
+            <input type="date" id="date-received" required>
+          </div>
+          <div class="form-group">
+            <label>رقم هاتف للتواصل (واتساب)</label>
+            <input type="tel" id="phone-received" placeholder="09xxxxxxxx أو 01xxxxxxxx" required>
+          </div>
+          <button type="submit" class="btn-submit" id="btnSub-received">تسجيل كـ مُستلم للمبلغ</button>
+        </form>
+      </div>
+
+      <!-- شاشة تتبع حالة البلاغ -->
+      <div id="view-track" class="view-section">
+        <button class="btn-back" onclick="showView('home')">→ رجوع</button>
+        <div class="section-title">تتبع حالة البلاغ</div>
+
+        <div class="form-group">
+          <input type="text" id="trackCode" placeholder="أدخل كود المتابعة (مثال: RJ-84C4-7A4B)" style="text-transform: uppercase;">
+        </div>
+        <button type="button" class="btn-submit" id="btnTrack" onclick="trackMyReport()">فحص الحالة</button>
+
+        <div id="trackResult"></div>
       </div>
     </div>
 
-    <!-- شاشة المُستلم -->
-    <div id="view-receiver" class="view-section">
-      <div class="max-w-2xl mx-auto">
-        <div class="flex justify-between items-center mb-6">
-          <h2 class="text-2xl font-bold text-purple-400">إبلاغ عن استلام مبلغ مجهول</h2>
-          <button onclick="showView('home')" class="text-gray-300 hover:text-white flex items-center gap-1 text-sm bg-cardbg px-4 py-2 rounded-lg border border-gray-700 transition">رجوع →</button>
-        </div>
-        <div class="bg-cardbg border border-gray-700 rounded-2xl p-6 shadow-2xl">
-          <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-6">
-            <p class="text-amber-200 text-sm"><strong class="text-amber-400">تنبيه:</strong> يمكنك الحصول على الرقم المرجعي والمبلغ من كشف الحساب أو الرسالة النصية.</p>
-          </div>
-          <form onsubmit="handleFormSubmit(event, 'received')" class="space-y-4">
-            <div>
-              <label class="block text-gray-300 text-sm font-medium mb-2">البنك أو المحفظة</label>
-              <select id="bank-received" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 focus:border-purple-500 transition" required>
-                <option value="بنكك (بنك الخرطوم)">بنكك (بنك الخرطوم)</option>
-                <option value="أو كاش (بنك أمدرمان الوطني)">أو كاش (بنك أمدرمان الوطني)</option>
-                <option value="فوري (بنك فيصل)">فوري (بنك فيصل)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-gray-300 text-sm font-medium mb-2">الرقم المرجعي (Ref ID)</label>
-              <input type="text" id="ref-received" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 focus:border-purple-500 transition" required>
-            </div>
-            <div>
-              <label class="block text-gray-300 text-sm font-medium mb-2">المبلغ المستلم بدقة</label>
-              <input type="number" id="amt-received" step="any" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 focus:border-purple-500 transition" required>
-            </div>
-            <div>
-              <label class="block text-gray-300 text-sm font-medium mb-2">تاريخ الاستلام</label>
-              <input type="date" id="date-received" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 focus:border-purple-500 transition" required>
-            </div>
-            <div>
-              <label class="block text-gray-300 text-sm font-medium mb-2">رقم الهاتف (واتساب)</label>
-              <input type="tel" id="phone-received" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 focus:border-purple-500 transition" required>
-            </div>
-            <button type="submit" id="btnSub-received" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3.5 rounded-xl transition-colors mt-4">
-              تسجيل وتأكيد البلاغ
-            </button>
-          </form>
-        </div>
-      </div>
+    <div class="footer">
+      رجّعها © 2026 – منصة وسيطة مستقلة لإرجاع التحويلات الخاطئة.
     </div>
-
-    <!-- شاشة التتبع -->
-    <div id="view-track" class="view-section">
-      <div class="max-w-2xl mx-auto">
-        <div class="flex justify-between items-center mb-6">
-          <h2 class="text-2xl font-bold text-blue-400">تتبع حالة البلاغ والمطابقة</h2>
-          <button onclick="showView('home')" class="text-gray-300 hover:text-white flex items-center gap-1 text-sm bg-cardbg px-4 py-2 rounded-lg border border-gray-700 transition">رجوع →</button>
-        </div>
-        <div class="bg-cardbg border border-gray-700 rounded-2xl p-6 shadow-2xl">
-          <div class="space-y-4">
-            <input type="text" id="trackCode" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 uppercase tracking-widest font-bold text-center" placeholder="أدخل كود البلاغ (RJ-XXXX-XXXX)">
-            <button type="button" id="btnTrack" onclick="trackMyReport()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-colors">
-              فحص الحالة الآن
-            </button>
-          </div>
-          <div id="trackResult" class="mt-6"></div>
-        </div>
-      </div>
-    </div>
-
   </div>
 
-  <!-- كود قاعدة البيانات والعمليات -->
   <script>
     const SUPABASE_URL = "https://cdxystrudncncrppmxjp.supabase.co";
-    // المفتاح تم إضافته بنجاح
-    const SUPABASE_ANON_KEY = "sb_publishable_SqFxr_F9uKfNChAtWa9sAA_oNWLXHHx"; 
-    
-    let supabaseClient;
-    try {
-        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    } catch(e) {
-        console.error("Supabase Init Error:", e);
-    }
-
-    const GREEN_ID_INSTANCE = "ضع_الـ_ID_هنا";
-    const GREEN_API_TOKEN = "ضع_الـ_TOKEN_هنا";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNkeHlzdHJ1ZG5jbmNycHBteGpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI2NzE5OTMsImV4cCI6MjA3ODI0Nzk5M30.b3B6X68u5u87Jb_Oq0O61_87yHqE7e1m-t48gA6aE_w";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('date-sent').value = today;
     document.getElementById('date-received').value = today;
 
-    async function sendWhatsAppNotification(phone, messageText) {
-      if (!phone || GREEN_ID_INSTANCE.includes("ضع_الـ")) return;
-      let cleanPhone = phone.replace(/[^0-9]/g, '');
-      if (cleanPhone.startsWith('0')) cleanPhone = '249' + cleanPhone.substring(1);
-      if (!cleanPhone.startsWith('249')) cleanPhone = '249' + cleanPhone;
-      try {
-        await fetch(`https://api.green-api.com/waInstance${GREEN_ID_INSTANCE}/sendMessage/${GREEN_API_TOKEN}`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chatId: `${cleanPhone}@c.us`, message: messageText })
-        });
-      } catch (err) {}
+    function showView(viewId) {
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById('errorAlert').style.display = 'none';
+      document.getElementById('successAlert').style.display = 'none';
+      document.getElementById(`view-${viewId}`).classList.add('active');
     }
 
     async function hashTransaction(refId) {
@@ -293,11 +485,11 @@
       const errBox = document.getElementById('errorAlert');
       const succBox = document.getElementById('successAlert');
       const btn = document.getElementById(`btnSub-${type}`);
-      errBox.classList.add('hidden');
-      succBox.classList.add('hidden');
+      errBox.style.display = 'none';
+      succBox.style.display = 'none';
 
       btn.disabled = true;
-      btn.innerText = "جاري الحفظ والتحقق...";
+      btn.innerText = "جاري الحفظ...";
 
       const bank = document.getElementById(`bank-${type}`).value;
       const ref = document.getElementById(`ref-${type}`).value.trim();
@@ -311,36 +503,31 @@
 
         const { error } = await supabaseClient
           .from('transfer_reports')
-          .insert([{
-            report_type: type, bank_text: bank, transaction_hash: txHash,
-            amount: amountVal, transaction_date: dateVal, phone_encrypted: phoneVal,
-            ref_code: refCode, status: 'pending'
-          }]);
+          .insert([
+            {
+              report_type: type,
+              bank_text: bank,
+              transaction_hash: txHash,
+              amount: amountVal,
+              transaction_date: dateVal,
+              phone_encrypted: phoneVal,
+              ref_code: refCode,
+              status: 'pending'
+            }
+          ]);
 
-        if (error) throw error; 
+        if (error) throw error;
 
-        succBox.classList.remove('hidden');
-        succBox.innerHTML = `<strong>تم تسجيل البلاغ بنجاح!</strong><br>كود المتابعة: <span class="bg-emerald-900/50 px-2 py-1 rounded mx-1">${refCode}</span>`;
+        succBox.style.display = 'block';
+        succBox.innerHTML = `<strong>تم تسجيل البلاغ بنجاح!</strong><br>كود المتابعة الخاص بك: <strong style="color:#fff; text-decoration: underline;">${refCode}</strong>`;
         e.target.reset();
         document.getElementById(`date-${type}`).value = today;
-
-        const oppositeType = type === 'sent' ? 'received' : 'sent';
-        const { data: matchedReports } = await supabaseClient
-          .from('transfer_reports').select('*').eq('transaction_hash', txHash).eq('report_type', oppositeType).limit(1);
-
-        if (matchedReports && matchedReports.length > 0) {
-          sendWhatsAppNotification(phoneVal, `منصة رجّعها: تطابق بلاغك! كود: ${refCode}`);
-          sendWhatsAppNotification(matchedReports[0].phone_encrypted, `منصة رجّعها: سجل الطرف الآخر البلاغ! كود: ${matchedReports[0].ref_code}`);
-        }
-
       } catch (err) {
-        errBox.classList.remove('hidden');
-        const errorMsg = err.message || err.details || JSON.stringify(err);
-        errBox.innerHTML = `<strong>الخطأ من قاعدة البيانات:</strong><br><span dir="ltr" class="text-xs font-mono text-left inline-block mt-1">${errorMsg}</span>`;
-        console.error("Supabase Error:", err);
+        errBox.style.display = 'block';
+        errBox.innerText = "حدث خطأ أثناء حفظ البلاغ في السيرفر.";
       } finally {
         btn.disabled = false;
-        btn.innerText = "تسجيل وتأكيد البلاغ";
+        btn.innerText = type === 'sent' ? "تسجيل وتأكيد البلاغ" : "تسجيل كـ مُستلم للمبلغ";
       }
     }
 
@@ -348,23 +535,40 @@
       const code = document.getElementById('trackCode').value.trim().toUpperCase();
       const resDiv = document.getElementById('trackResult');
       const btn = document.getElementById('btnTrack');
+
       resDiv.innerHTML = "";
-      if (!code) return;
+      if (!code) {
+        alert("يرجى كتابة كود المتابعة أولاً");
+        return;
+      }
 
       btn.disabled = true;
       btn.innerText = "جاري الفحص...";
 
       try {
-        const { data: myReports, error } = await supabaseClient.from('transfer_reports').select('*').eq('ref_code', code).limit(1);
+        const { data: myReports, error } = await supabaseClient
+          .from('transfer_reports')
+          .select('*')
+          .eq('ref_code', code)
+          .limit(1);
+
         if (error) throw error;
+
         if (!myReports || myReports.length === 0) {
-          resDiv.innerHTML = `<div class="text-center text-red-400 bg-red-500/10 p-4 rounded-xl border border-red-500/30">لم يتم العثور على أي بلاغ بهذا الكود.</div>`;
+          resDiv.innerHTML = `<div class="result-card" style="text-align: center; color: #fca5a5;">لم يتم العثور على أي بلاغ مسجل بهذا الكود.</div>`;
           return;
         }
 
         const report = myReports[0];
         const oppositeType = report.report_type === 'sent' ? 'received' : 'sent';
-        const { data: matches } = await supabaseClient.from('transfer_reports').select('*').eq('transaction_hash', report.transaction_hash).eq('report_type', oppositeType).limit(1);
+
+        const { data: matches } = await supabaseClient
+          .from('transfer_reports')
+          .select('*')
+          .eq('transaction_hash', report.transaction_hash)
+          .eq('report_type', oppositeType)
+          .limit(1);
+
         const isMatched = matches && matches.length > 0;
         const otherParty = isMatched ? matches[0] : null;
 
@@ -373,78 +577,89 @@
           let phoneClean = otherParty.phone_encrypted.replace(/[^0-9]/g, '');
           if (phoneClean.startsWith('0')) phoneClean = '249' + phoneClean.substring(1);
           if (!phoneClean.startsWith('249')) phoneClean = '249' + phoneClean;
+
+          const title = report.report_type === 'sent' ? 'المُستلم' : 'المُرسل';
+
           contactHtml = `
-            <div class="mt-4 pt-4 border-t border-gray-700 text-center">
-              <p class="text-gray-300 text-sm mb-3">تم التطابق! رقم هاتف الطرف الآخر: <strong class="text-emerald-400 font-bold">${otherParty.phone_encrypted}</strong></p>
-              <a href="https://wa.me/${phoneClean}?text=${encodeURIComponent('السلام عليكم، بخصوص التحويل (كود: ' + code + ')')}" target="_blank" class="block w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl">مراسلة عبر واتساب</a>
-            </div>`;
+            <div class="matched-box">
+              <p>تم التطابق مع <strong>${title}</strong>!<br>رقم هاتفه: <strong style="color: #6ee7b7;">${otherParty.phone_encrypted}</strong></p>
+              <a href="https://wa.me/${phoneClean}?text=${encodeURIComponent('السلام عليكم، بخصوص التحويل عبر منصة رجّعها (كود: ' + code + ')')}" target="_blank" class="btn-whatsapp">
+                مراسلة عبر واتساب 💬
+              </a>
+            </div>
+          `;
         }
 
         resDiv.innerHTML = `
-          <div class="bg-inputbg border border-gray-700 rounded-xl p-5">
-            <div class="flex justify-between mb-3"><span class="text-gray-400">الحالة:</span>${isMatched ? '<span class="text-emerald-400">تطابق مؤكد ✅</span>' : '<span class="text-amber-400">قيد الانتظار ⏳</span>'}</div>
-            <div class="flex justify-between mb-3"><span class="text-gray-400">النوع:</span><span class="text-white">${report.report_type === 'sent' ? 'مُرسل' : 'مُستلم'}</span></div>
-            <div class="flex justify-between mb-3"><span class="text-gray-400">البنك:</span><span class="text-white">${report.bank_text}</span></div>
-            <div class="flex justify-between mb-3"><span class="text-gray-400">المبلغ:</span><span class="text-white">${report.amount} جنيه</span></div>
+          <div class="result-card">
+            <div class="result-row">
+              <span class="result-label">حالة البلاغ:</span>
+              <span>${isMatched ? '<span class="badge-match">تطابق مؤكد ✅</span>' : '<span class="badge-pending">قيد الانتظار ⏳</span>'}</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">نوع البلاغ:</span>
+              <span class="result-value">${report.report_type === 'sent' ? 'مُرسل (تحويل بالخطأ)' : 'مُستلم (وصلتني أموال)'}</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">البنك / المحفظة:</span>
+              <span class="result-value">${report.bank_text}</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">المبلغ:</span>
+              <span class="result-value">${report.amount} جنيه</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">تاريخ المعاملة:</span>
+              <span class="result-value">${report.transaction_date}</span>
+            </div>
             ${contactHtml}
-          </div>`;
+          </div>
+        `;
+
       } catch (err) {
-        resDiv.innerHTML = `<div class="text-center text-red-400">حدث خطأ في فحص البلاغ.</div>`;
+        resDiv.innerHTML = `<div class="result-card" style="text-align: center; color: #ef4444;">حدث خطأ أثناء فحص البلاغ.</div>`;
       } finally {
         btn.disabled = false;
-        btn.innerText = "فحص الحالة الآن";
+        btn.innerText = "فحص الحالة";
       }
     }
 
     const receiptInput = document.getElementById('receiptUpload');
     const ocrStatus = document.getElementById('ocrStatus');
-    const progressWrap = document.getElementById('ocrProgressWrap');
-    const progressBar = document.getElementById('ocrProgressBar');
+    const ocrSub = document.getElementById('ocrSub');
 
     receiptInput.addEventListener('change', async function(e) {
       const file = e.target.files[0];
       if (!file) return;
 
-      ocrStatus.className = "text-xs mt-2 font-bold text-amber-400";
-      ocrStatus.innerText = "جاري الفحص واستخراج البيانات...";
-      progressWrap.classList.remove('hidden');
-      progressBar.style.width = '15%';
+      ocrStatus.className = "ocr-status processing";
+      ocrStatus.innerText = "جاري فحص وقراءة البيانات من الإيصال...";
+      ocrSub.innerText = file.name;
 
       try {
-        const worker = await Tesseract.createWorker('ara+eng', 1, {
-          logger: m => { if (m.status === 'recognizing text') progressBar.style.width = `${Math.max(15, Math.round(m.progress * 100))}%`; }
-        });
-
+        const worker = await Tesseract.createWorker('ara+eng');
         const ret = await worker.recognize(file);
         const text = ret.data.text;
         await worker.terminate();
-        progressBar.style.width = '100%';
 
-        const amountMatch = text.match(/(?:المبلغ|Amount|المبلغ المحول)[:\s\-]*([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]+)?)/i) || text.match(/([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]+)?)\s*(?:SDG|ج\.س|جنيه)/i);
+        const amountMatch = text.match(/([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]+)?|[0-9]+(?:\.[0-9]+)?)\s*(?:SDG|ج\.س|جنيه)/i) || text.match(/(?:المبلغ|Amount)[:\s]*([0-9,.]+)/i);
         if (amountMatch) {
           const rawAmount = amountMatch[1].replace(/,/g, '');
           if (!isNaN(rawAmount) && parseFloat(rawAmount) > 0) {
             document.getElementById('amt-sent').value = parseFloat(rawAmount);
-            document.getElementById('amt-sent').classList.add('border-emerald-500');
           }
         }
 
-        const refMatch = text.match(/(?:الرقم المرجعي|رقم العملية|Transaction ID|Ref ID|TRX)[:\s\-#]*([A-Za-z0-9]{8,18})/i) || text.match(/\b(21[0-9]{9,12})\b/);
+        const refMatch = text.match(/(?:Ref|TRX|المرجعي|رقم العملية|Reference)[:\s#]*([0-9]{6,16})/i) || text.match(/\b([0-9]{10,14})\b/);
         if (refMatch) {
           document.getElementById('ref-sent').value = refMatch[1];
-          document.getElementById('ref-sent').classList.add('border-emerald-500');
         }
 
-        setTimeout(() => {
-          progressWrap.classList.add('hidden');
-          ocrStatus.className = "text-xs mt-2 font-bold text-emerald-400";
-          ocrStatus.innerText = "تم الفحص وتعبئة البيانات بنجاح ✅";
-        }, 400);
-
+        ocrStatus.className = "ocr-status success";
+        ocrStatus.innerText = "تم الفحص بنجاح ✅";
       } catch (err) {
-        progressWrap.classList.add('hidden');
-        ocrStatus.className = "text-xs mt-2 font-bold text-red-400";
-        ocrStatus.innerText = "تعذر الفحص، يرجى الكتابة يدوياً.";
+        ocrStatus.className = "ocr-status error";
+        ocrStatus.innerText = "تعذر استخراج النص تلقائياً، يرجى ملء الخانات يدوياً.";
       }
     });
   </script>
