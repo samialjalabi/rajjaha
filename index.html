@@ -19,7 +19,6 @@
     :root {
       --primary: #c93b2b;
       --primary-hover: #b03224;
-      --primary-glow: rgba(201, 59, 43, 0.25);
       --bg-page: #0f172a;
       --bg-card: #1e293b;
       --text-main: #f1f5f9;
@@ -27,7 +26,6 @@
       --border: #475569;
       --input-bg: #0f172a;
       --success: #10b981;
-      --success-glow: rgba(16, 185, 129, 0.2);
       --whatsapp: #25d366;
       --whatsapp-hover: #1ebd5b;
       --font-family: 'IBM Plex Sans Arabic', sans-serif;
@@ -80,16 +78,15 @@
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     }
 
-    /* أزرار القائمة الرئيسية */
     .menu-btn {
       width: 100%;
       padding: 16px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border);
       border-radius: 12px;
       color: #fff;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       cursor: pointer;
       display: flex;
@@ -99,9 +96,8 @@
     }
 
     .menu-btn:hover {
-      background: rgba(201, 59, 43, 0.1);
+      background: rgba(201, 59, 43, 0.12);
       border-color: var(--primary);
-      transform: translateY(-2px);
     }
 
     .btn-back {
@@ -115,7 +111,6 @@
       font-weight: 600;
       margin-bottom: 16px;
       display: inline-block;
-      transition: 0.2s;
     }
 
     .btn-back:hover {
@@ -136,9 +131,6 @@
       font-weight: 700;
       margin-bottom: 18px;
       color: #fff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
 
     .form-group {
@@ -162,14 +154,12 @@
       color: #fff;
       font-size: 14px;
       outline: none;
-      transition: border-color 0.2s;
     }
 
     input:focus, select:focus {
       border-color: var(--primary);
     }
 
-    /* صندوق رفع الإيصال */
     .ocr-box {
       border: 2px dashed #475569;
       border-radius: 10px;
@@ -230,7 +220,6 @@
       font-weight: 600;
       cursor: pointer;
       margin-top: 8px;
-      transition: background 0.2s;
     }
 
     .btn-submit:hover {
@@ -253,12 +242,11 @@
     }
 
     .alert-success {
-      background: var(--success-glow);
+      background: rgba(16, 185, 129, 0.15);
       border: 1px solid var(--success);
       color: #6ee7b7;
     }
 
-    /* بطاقة التتبع والتطابق */
     .result-card {
       margin-top: 18px;
       background: #0f172a;
@@ -285,7 +273,7 @@
 
     .badge-match {
       padding: 4px 10px;
-      background: var(--success-glow);
+      background: rgba(16, 185, 129, 0.2);
       border: 1px solid var(--success);
       color: #6ee7b7;
       border-radius: 6px;
@@ -356,7 +344,7 @@
       <div id="errorAlert" class="alert alert-error"></div>
       <div id="successAlert" class="alert alert-success"></div>
 
-      <!-- 1. الشاشة الرئيسية للقائمة -->
+      <!-- الشاشة الرئيسية -->
       <div id="view-home" class="view-section active">
         <button class="menu-btn" onclick="showView('sender')">
           <span>🚨 بلاغ عن تحويل بالخطأ (مُرسل)</span>
@@ -372,7 +360,7 @@
         </button>
       </div>
 
-      <!-- 2. شاشة بلاغ مُرسل -->
+      <!-- شاشة بلاغ مُرسل -->
       <div id="view-sender" class="view-section">
         <button class="btn-back" onclick="showView('home')">→ رجوع</button>
         <div class="section-title">بلاغ عن تحويل بالخطأ (مُرسل)</div>
@@ -415,7 +403,7 @@
         </form>
       </div>
 
-      <!-- 3. شاشة بلاغ مُستلم -->
+      <!-- شاشة بلاغ مُستلم -->
       <div id="view-receiver" class="view-section">
         <button class="btn-back" onclick="showView('home')">→ رجوع</button>
         <div class="section-title">وصلتني أموال بالخطأ (مُستلم)</div>
@@ -451,7 +439,7 @@
         </form>
       </div>
 
-      <!-- 4. شاشة تتبع حالة البلاغ -->
+      <!-- شاشة تتبع حالة البلاغ -->
       <div id="view-track" class="view-section">
         <button class="btn-back" onclick="showView('home')">→ رجوع</button>
         <div class="section-title">تتبع حالة البلاغ</div>
@@ -479,7 +467,6 @@
     document.getElementById('date-sent').value = today;
     document.getElementById('date-received').value = today;
 
-    // التنقل بين الشاشات مع الحفاظ على زر الرجوع
     function showView(viewId) {
       document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
       document.getElementById('errorAlert').style.display = 'none';
@@ -493,7 +480,6 @@
       return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    // إرسال البلاغات
     async function handleFormSubmit(e, type) {
       e.preventDefault();
       const errBox = document.getElementById('errorAlert');
@@ -545,7 +531,6 @@
       }
     }
 
-    // فحص وتتبع البلاغ (بطاقة واحدة نظيفة + عرض رقم هاتف الطرف الآخر وزر واتساب عند التطابق)
     async function trackMyReport() {
       const code = document.getElementById('trackCode').value.trim().toUpperCase();
       const resDiv = document.getElementById('trackResult');
@@ -561,7 +546,6 @@
       btn.innerText = "جاري الفحص...";
 
       try {
-        // جلب بلاغ المستخدم
         const { data: myReports, error } = await supabaseClient
           .from('transfer_reports')
           .select('*')
@@ -578,7 +562,6 @@
         const report = myReports[0];
         const oppositeType = report.report_type === 'sent' ? 'received' : 'sent';
 
-        // فحص وجود بلاغ مطابق من الطرف الآخر
         const { data: matches } = await supabaseClient
           .from('transfer_reports')
           .select('*')
@@ -641,7 +624,6 @@
       }
     }
 
-    // فحص الإيصال
     const receiptInput = document.getElementById('receiptUpload');
     const ocrStatus = document.getElementById('ocrStatus');
     const ocrSub = document.getElementById('ocrSub');
