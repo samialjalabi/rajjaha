@@ -28,6 +28,8 @@
       --input-bg: #0b0f19;
       --success: #10b981;
       --success-glow: rgba(16, 185, 129, 0.2);
+      --whatsapp: #25d366;
+      --whatsapp-hover: #1ebd5b;
       --ease: cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -52,11 +54,11 @@
     .container {
       width: 100%;
       max-width: 520px;
-      animation: pageEntrance 0.6s var(--ease) forwards;
+      animation: pageEntrance 0.5s var(--ease) forwards;
     }
 
     @keyframes pageEntrance {
-      from { opacity: 0; transform: translateY(18px); }
+      from { opacity: 0; transform: translateY(16px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
@@ -69,7 +71,6 @@
       font-size: 28px;
       font-weight: 700;
       color: var(--primary);
-      letter-spacing: -0.5px;
       margin-bottom: 6px;
       text-shadow: 0 0 20px var(--primary-glow);
     }
@@ -79,48 +80,103 @@
       color: var(--text-muted);
     }
 
+    /* أزرار التبديل الرئيسية */
+    .tabs-nav {
+      display: flex;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      gap: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 26px;
+      padding: 24px;
       box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
-      position: relative;
     }
 
-    .tab-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 22px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      padding-bottom: 14px;
+    .tab-panel {
+      display: none;
+      animation: fadeIn 0.3s var(--ease);
     }
 
-    .tab-title {
-      font-size: 17px;
-      font-weight: 600;
-      color: var(--text-main);
+    .tab-panel.active {
+      display: block;
     }
 
-    /* صندوق رفع الإيصال المطور حركياً */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.99); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #cbd5e1;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    /* صندوق رفع الإيصال التفاعلي */
     .ocr-box {
       border: 2px dashed #475569;
       border-radius: 12px;
-      padding: 22px 16px;
+      padding: 20px 16px;
       text-align: center;
-      background: rgba(11, 15, 25, 0.55);
-      margin-bottom: 22px;
+      background: rgba(11, 15, 25, 0.5);
+      margin-bottom: 20px;
       cursor: pointer;
       position: relative;
-      transition: all 0.3s var(--ease);
+      transition: all 0.25s var(--ease);
     }
 
     .ocr-box:hover, .ocr-box.dragover {
       border-color: var(--primary);
       background: rgba(201, 59, 43, 0.05);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px var(--primary-glow);
     }
 
     .ocr-box input[type="file"] {
@@ -142,18 +198,15 @@
     .ocr-subtitle {
       font-size: 12px;
       color: var(--text-muted);
-      transition: color 0.3s;
     }
 
-    /* شريط تقدم الفحص */
     .ocr-progress-wrap {
       display: none;
-      margin-top: 14px;
+      margin-top: 12px;
       background: rgba(255, 255, 255, 0.08);
       border-radius: 99px;
       height: 6px;
       overflow: hidden;
-      position: relative;
     }
 
     .ocr-progress-bar {
@@ -169,69 +222,30 @@
       margin-top: 10px;
       font-size: 13px;
       font-weight: 600;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
     }
 
     .ocr-status.processing {
-      display: flex;
+      display: block;
       color: #f59e0b;
       animation: pulseText 1.5s infinite;
     }
 
     .ocr-status.success {
-      display: flex;
+      display: block;
       color: var(--success);
-      animation: popIn 0.35s var(--ease);
     }
 
     .ocr-status.error {
-      display: flex;
+      display: block;
       color: #ef4444;
-      animation: popIn 0.35s var(--ease);
     }
 
     @keyframes pulseText {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.55; }
+      50% { opacity: 0.5; }
     }
 
-    @keyframes popIn {
-      from { transform: scale(0.9); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    .form-group {
-      margin-bottom: 18px;
-    }
-
-    label {
-      display: block;
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 8px;
-      color: #cbd5e1;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 13px 15px;
-      background: var(--input-bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: #fff;
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
-    }
-
-    input:focus, select:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--primary-glow);
-    }
-
-    /* زر التسجيل مع مؤشر التحميل الدوار */
+    /* الأزرار التفاعلية */
     .btn-submit {
       width: 100%;
       padding: 14px;
@@ -242,9 +256,7 @@
       font-size: 15px;
       font-weight: 600;
       cursor: pointer;
-      margin-top: 10px;
-      position: relative;
-      overflow: hidden;
+      margin-top: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -255,10 +267,6 @@
     .btn-submit:hover:not(:disabled) {
       background: var(--primary-hover);
       transform: translateY(-1px);
-    }
-
-    .btn-submit:active:not(:disabled) {
-      transform: translateY(0);
     }
 
     .btn-submit:disabled {
@@ -280,7 +288,7 @@
       to { transform: rotate(360deg); }
     }
 
-    /* تنبيهات النظام الحركية */
+    /* رسائل التنبيه */
     .alert {
       padding: 13px 16px;
       border-radius: 10px;
@@ -288,7 +296,7 @@
       line-height: 1.5;
       margin-bottom: 18px;
       display: none;
-      animation: slideDown 0.35s var(--ease);
+      animation: slideDown 0.3s var(--ease);
     }
 
     @keyframes slideDown {
@@ -308,6 +316,87 @@
       color: #6ee7b7;
     }
 
+    /* بطاقة نتيجة فحص البلاغ */
+    .result-card {
+      margin-top: 18px;
+      background: #0b0f19;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      animation: slideDown 0.35s var(--ease);
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .result-label {
+      color: var(--text-muted);
+    }
+
+    .result-value {
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .badge-match {
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--success-glow);
+      border: 1px solid var(--success);
+      color: #6ee7b7;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    .badge-pending {
+      display: inline-block;
+      padding: 4px 10px;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid #f59e0b;
+      color: #fcd34d;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    .matched-box {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--border);
+      text-align: center;
+    }
+
+    .matched-box p {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-bottom: 12px;
+    }
+
+    .btn-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px;
+      background: var(--whatsapp);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .btn-whatsapp:hover {
+      background: var(--whatsapp-hover);
+    }
+
     .footer {
       margin-top: 26px;
       text-align: center;
@@ -324,62 +413,124 @@
       <p>منصة وسيطة مستقلة لإرجاع التحويلات الخاطئة</p>
     </div>
 
-    <div class="card">
-      <div class="tab-header">
-        <span class="tab-title">بلاغ عن تحويل بالخطأ (مُرسل)</span>
-      </div>
+    <!-- شريط التنقل بين الخدمات -->
+    <div class="tabs-nav">
+      <button class="tab-btn active" onclick="switchTab('sender')">أنا حوّلت بالخطأ</button>
+      <button class="tab-btn" onclick="switchTab('receiver')">وصلتني أموال بالخطأ</button>
+      <button class="tab-btn" onclick="switchTab('track')">تتبع حالة البلاغ</button>
+    </div>
 
+    <div class="card">
       <div id="errorAlert" class="alert alert-error"></div>
       <div id="successAlert" class="alert alert-success"></div>
 
-      <!-- صندوق رفع الإيصال التفاعلي -->
-      <div class="ocr-box" id="ocrBox">
-        <input type="file" id="receiptUpload" accept="image/png, image/jpeg, image/jpg">
-        <div class="ocr-title">فحص وتعبئة آلية عبر الإيصال</div>
-        <div class="ocr-subtitle" id="ocrSub">اسحب صورة الإيصال هنا أو اضغط للاختيار (PNG/JPG)</div>
-        <div class="ocr-progress-wrap" id="ocrProgressWrap">
-          <div class="ocr-progress-bar" id="ocrProgressBar"></div>
+      <!-- تبويب 1: بلاغ عن تحويل بالخطأ (مُرسل) -->
+      <div id="panel-sender" class="tab-panel active">
+        <!-- صندوق رفع الإيصال -->
+        <div class="ocr-box" id="ocrBox">
+          <input type="file" id="receiptUpload" accept="image/png, image/jpeg, image/jpg">
+          <div class="ocr-title">فحص وتعبئة آلية عبر الإيصال</div>
+          <div class="ocr-subtitle" id="ocrSub">اسحب صورة الإيصال هنا أو اضغط للاختيار (PNG/JPG)</div>
+          <div class="ocr-progress-wrap" id="ocrProgressWrap">
+            <div class="ocr-progress-bar" id="ocrProgressBar"></div>
+          </div>
+          <div id="ocrStatus" class="ocr-status"></div>
         </div>
-        <div id="ocrStatus" class="ocr-status"></div>
+
+        <form onsubmit="handleReportSubmit(event, 'sent')">
+          <div class="form-group">
+            <label>البنك أو المحفظة</label>
+            <select id="bankName-sent" required>
+              <option value="بنكك (بنك الخرطوم)">بنكك (بنك الخرطوم)</option>
+              <option value="أو كاش (بنك أمدرمان الوطني)">أو كاش (بنك أمدرمان الوطني)</option>
+              <option value="فوري (بنك فيصل)">فوري (بنك فيصل)</option>
+              <option value="برافو (Bravo)">برافو (Bravo)</option>
+              <option value="المشرق (Blue Nile Mashreg)">المشرق (Blue Nile Mashreg)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>الرقم المرجعي للعملية (Ref ID / TRX)</label>
+            <input type="text" id="refId-sent" placeholder="مثال: 21141403837" required>
+          </div>
+
+          <div class="form-group">
+            <label>المبلغ بالجنيه بدقة</label>
+            <input type="number" id="amount-sent" step="any" placeholder="مثال: 10000" required>
+          </div>
+
+          <div class="form-group">
+            <label>تاريخ المعاملة</label>
+            <input type="date" id="txDate-sent" required>
+          </div>
+
+          <div class="form-group">
+            <label>رقم هاتفك للتواصل (واتساب)</label>
+            <input type="tel" id="phone-sent" placeholder="09xxxxxxxx أو 01xxxxxxxx" required>
+          </div>
+
+          <button type="submit" class="btn-submit" id="btn-sent">
+            <span class="spinner"></span>
+            <span>تسجيل وتأكيد البلاغ</span>
+          </button>
+        </form>
       </div>
 
-      <form id="reportForm">
+      <!-- تبويب 2: استلام أموال بالخطأ (مُستلم) -->
+      <div id="panel-receiver" class="tab-panel">
+        <form onsubmit="handleReportSubmit(event, 'received')">
+          <div class="form-group">
+            <label>البنك أو المحفظة</label>
+            <select id="bankName-received" required>
+              <option value="بنكك (بنك الخرطوم)">بنكك (بنك الخرطوم)</option>
+              <option value="أو كاش (بنك أمدرمان الوطني)">أو كاش (بنك أمدرمان الوطني)</option>
+              <option value="فوري (بنك فيصل)">فوري (بنك فيصل)</option>
+              <option value="برافو (Bravo)">برافو (Bravo)</option>
+              <option value="المشرق (Blue Nile Mashreg)">المشرق (Blue Nile Mashreg)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>الرقم المرجعي للعملية المستلمة (Ref ID)</label>
+            <input type="text" id="refId-received" placeholder="الرقم المرجعي من رسالة الإشعار" required>
+          </div>
+
+          <div class="form-group">
+            <label>المبلغ المستلم بالجنيه</label>
+            <input type="number" id="amount-received" step="any" placeholder="المبلغ الذي وصلك" required>
+          </div>
+
+          <div class="form-group">
+            <label>تاريخ الاستلام</label>
+            <input type="date" id="txDate-received" required>
+          </div>
+
+          <div class="form-group">
+            <label>رقم هاتفك للتواصل (واتساب)</label>
+            <input type="tel" id="phone-received" placeholder="09xxxxxxxx أو 01xxxxxxxx" required>
+          </div>
+
+          <button type="submit" class="btn-submit" id="btn-received">
+            <span class="spinner"></span>
+            <span>تسجيل كـ مُستلم للمبلغ</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- تبويب 3: تتبع حالة البلاغ والتحقق من التطابق -->
+      <div id="panel-track" class="tab-panel">
         <div class="form-group">
-          <label>البنك أو المحفظة</label>
-          <select id="bankName" required>
-            <option value="بنكك (بنك الخرطوم)">بنكك (بنك الخرطوم)</option>
-            <option value="أو كاش (بنك أمدرمان الوطني)">أو كاش (بنك أمدرمان الوطني)</option>
-            <option value="فوري (بنك فيصل)">فوري (بنك فيصل)</option>
-            <option value="برافو (Bravo)">برافو (Bravo)</option>
-            <option value="المشرق (Blue Nile Mashreg)">المشرق (Blue Nile Mashreg)</option>
-          </select>
+          <label>كود المتابعة الخاص بالبلاغ</label>
+          <input type="text" id="trackInput" placeholder="مثال: RJ-84C4-7A4B" style="text-transform: uppercase;">
         </div>
 
-        <div class="form-group">
-          <label>الرقم المرجعي للعملية (Ref ID / TRX)</label>
-          <input type="text" id="refId" placeholder="مثال: 21141403837" required>
-        </div>
-
-        <div class="form-group">
-          <label>المبلغ بالجنيه بدقة</label>
-          <input type="number" id="amount" step="any" placeholder="مثال: 10000" required>
-        </div>
-
-        <div class="form-group">
-          <label>تاريخ المعاملة</label>
-          <input type="date" id="txDate" required>
-        </div>
-
-        <div class="form-group">
-          <label>رقم هاتف للتواصل (واتساب)</label>
-          <input type="tel" id="contactPhone" placeholder="09xxxxxxxx أو 01xxxxxxxx" required>
-        </div>
-
-        <button type="submit" class="btn-submit" id="submitBtn">
-          <span class="spinner" id="btnSpinner"></span>
-          <span id="btnText">تسجيل وتأكيد البلاغ</span>
+        <button type="button" class="btn-submit" id="btn-track" onclick="trackReport()">
+          <span class="spinner"></span>
+          <span>فحص الحالة والتطابق</span>
         </button>
-      </form>
+
+        <div id="trackResultContainer"></div>
+      </div>
     </div>
 
     <div class="footer">
@@ -388,44 +539,221 @@
   </div>
 
   <script>
-    // بيانات الاتصال بقاعدة البيانات
+    // بيانات الاتصال بقاعدة البيانات Supabase
     const SUPABASE_URL = "https://cdxystrudncncrppmxjp.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNkeHlzdHJ1ZG5jbmNycHBteGpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI2NzE5OTMsImV4cCI6MjA3ODI0Nzk5M30.b3B6X68u5u87Jb_Oq0O61_87yHqE7e1m-t48gA6aE_w";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const dateInput = document.getElementById('txDate');
+    // ضبط تواريخ اليوم
     const today = new Date().toISOString().split('T')[0];
-    dateInput.value = today;
+    document.getElementById('txDate-sent').value = today;
+    document.getElementById('txDate-received').value = today;
 
+    // دالة التبديل بين التبويبات
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+      document.getElementById('errorAlert').style.display = 'none';
+      document.getElementById('successAlert').style.display = 'none';
+
+      if (tab === 'sender') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('panel-sender').classList.add('active');
+      } else if (tab === 'receiver') {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('panel-receiver').classList.add('active');
+      } else {
+        document.querySelectorAll('.tab-btn')[2].classList.add('active');
+        document.getElementById('panel-track').classList.add('active');
+      }
+    }
+
+    // تجزئة رقم المعاملة (SHA-256)
+    async function hashTransaction(refId) {
+      const msgUint8 = new TextEncoder().encode(refId.trim());
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // إرسال البلاغات (مُرسل أو مُستلم)
+    async function handleReportSubmit(e, reportType) {
+      e.preventDefault();
+      const errBox = document.getElementById('errorAlert');
+      const succBox = document.getElementById('successAlert');
+      errBox.style.display = 'none';
+      succBox.style.display = 'none';
+
+      const btn = document.getElementById(`btn-${reportType}`);
+      const spinner = btn.querySelector('.spinner');
+      const btnText = btn.querySelector('span:last-child');
+      
+      btn.disabled = true;
+      spinner.style.display = 'inline-block';
+      btnText.innerText = "جاري الحفظ والتشفير...";
+
+      const bank = document.getElementById(`bankName-${reportType}`).value;
+      const ref = document.getElementById(`refId-${reportType}`).value.trim();
+      const amountVal = parseFloat(document.getElementById(`amount-${reportType}`).value);
+      const dateVal = document.getElementById(`txDate-${reportType}`).value;
+      const phoneVal = document.getElementById(`phone-${reportType}`).value.trim();
+
+      try {
+        const txHash = await hashTransaction(ref);
+        const refCode = "RJ-" + Math.random().toString(36).substring(2, 6).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
+
+        const { error } = await supabaseClient
+          .from('transfer_reports')
+          .insert([
+            {
+              report_type: reportType,
+              bank_text: bank,
+              transaction_hash: txHash,
+              amount: amountVal,
+              transaction_date: dateVal,
+              phone_encrypted: phoneVal,
+              ref_code: refCode,
+              status: 'pending'
+            }
+          ]);
+
+        if (error) throw error;
+
+        succBox.style.display = 'block';
+        succBox.innerHTML = `<strong>تم حفظ بلاغك بنجاح!</strong><br>احتفظ بهذا الكود لمتابعة المطابقة:<br><span style="font-size: 16px; font-weight: 700; color: #fff; background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 6px; display: inline-block; margin-top: 6px;">${refCode}</span>`;
+        
+        e.target.reset();
+        document.getElementById(`txDate-${reportType}`).value = today;
+      } catch (err) {
+        console.error("Save error:", err);
+        errBox.style.display = 'block';
+        errBox.innerText = "حدث خطأ أثناء حفظ البلاغ. تأكد من اتصالك بالإنترنت.";
+      } finally {
+        btn.disabled = false;
+        spinner.style.display = 'none';
+        btnText.innerText = reportType === 'sent' ? "تسجيل وتأكيد البلاغ" : "تسجيل كـ مُستلم للمبلغ";
+      }
+    }
+
+    // تتبع حالة البلاغ وجلب رقم هاتف الطرف الآخر عند التطابق
+    async function trackReport() {
+      const codeInput = document.getElementById('trackInput').value.trim().toUpperCase();
+      const container = document.getElementById('trackResultContainer');
+      const btn = document.getElementById('btn-track');
+      const spinner = btn.querySelector('.spinner');
+      const btnText = btn.querySelector('span:last-child');
+
+      container.innerHTML = "";
+      if (!codeInput) {
+        alert("يرجى إدخال كود المتابعة أولاً");
+        return;
+      }
+
+      btn.disabled = true;
+      spinner.style.display = 'inline-block';
+      btnText.innerText = "جاري البحث...";
+
+      try {
+        // 1. جلب بلاغ المستخدم
+        const { data: myReports, error: myError } = await supabaseClient
+          .from('transfer_reports')
+          .select('*')
+          .eq('ref_code', codeInput)
+          .limit(1);
+
+        if (myError) throw myError;
+
+        if (!myReports || myReports.length === 0) {
+          container.innerHTML = `<div class="result-card" style="text-align: center; color: #fca5a5;">لم يتم العثور على أي بلاغ مسجل بهذا الكود.</div>`;
+          return;
+        }
+
+        const myReport = myReports[0];
+        const oppositeType = myReport.report_type === 'sent' ? 'received' : 'sent';
+
+        // 2. البحث عن بلاغ مطابق للطرف الآخر (نفس الهاش والمبلغ والبنك والنوع المعاكس)
+        const { data: matchedReports } = await supabaseClient
+          .from('transfer_reports')
+          .select('*')
+          .eq('transaction_hash', myReport.transaction_hash)
+          .eq('report_type', oppositeType)
+          .limit(1);
+
+        const hasMatch = matchedReports && matchedReports.length > 0;
+        const otherParty = hasMatch ? matchedReports[0] : null;
+
+        let contactSectionHtml = "";
+        if (hasMatch) {
+          // تنسيق رقم الهاتف ليناسب رابط الواتساب المباشر
+          let rawPhone = otherParty.phone_encrypted.replace(/[^0-9]/g, '');
+          if (rawPhone.startsWith('0')) rawPhone = '249' + rawPhone.substring(1);
+          if (!rawPhone.startsWith('249')) rawPhone = '249' + rawPhone;
+
+          const partyTitle = myReport.report_type === 'sent' ? 'المُستلم (الشخص الذي وصلته الأموال)' : 'المُرسل (صاحب المال الأصلي)';
+
+          contactSectionHtml = `
+            <div class="matched-box">
+              <p>تم العثور على تطابق كامل مع <strong>${partyTitle}</strong>!<br>رقم هاتفه للتواصل: <strong style="color: #6ee7b7;">${otherParty.phone_encrypted}</strong></p>
+              <a href="https://wa.me/${rawPhone}?text=${encodeURIComponent('السلام عليكم، بخصوص التحويل الخاطئ عبر منصة رجّعها (كود: ' + codeInput + ')')}" target="_blank" class="btn-whatsapp">
+                مراسلة الطرف الآخر عبر واتساب 💬
+              </a>
+            </div>
+          `;
+        }
+
+        container.innerHTML = `
+          <div class="result-card">
+            <div class="result-row">
+              <span class="result-label">حالة البلاغ:</span>
+              <span>${hasMatch ? '<span class="badge-match">تطابق مؤكد ✅</span>' : '<span class="badge-pending">قيد الانتظار ⏳</span>'}</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">نوع البلاغ:</span>
+              <span class="result-value">${myReport.report_type === 'sent' ? 'مُرسل (تحويل بالخطأ)' : 'مُستلم (أموال وصلتني)'}</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">البنك / المحفظة:</span>
+              <span class="result-value">${myReport.bank_text}</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">المبلغ المسجل:</span>
+              <span class="result-value">${myReport.amount} جنيه</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">تاريخ المعاملة:</span>
+              <span class="result-value">${myReport.transaction_date}</span>
+            </div>
+            ${contactSectionHtml}
+          </div>
+        `;
+
+      } catch (err) {
+        console.error("Track error:", err);
+        container.innerHTML = `<div class="result-card" style="text-align: center; color: #ef4444;">حدث خطأ أثناء فحص السيرفر، يرجى المحاولة لاحقاً.</div>`;
+      } finally {
+        btn.disabled = false;
+        spinner.style.display = 'none';
+        btnText.innerText = "فحص الحالة والتطابق";
+      }
+    }
+
+    // التعرف الضوئي على الإيصال
     const receiptInput = document.getElementById('receiptUpload');
     const ocrBox = document.getElementById('ocrBox');
     const ocrStatus = document.getElementById('ocrStatus');
     const ocrSub = document.getElementById('ocrSub');
     const progressWrap = document.getElementById('ocrProgressWrap');
     const progressBar = document.getElementById('ocrProgressBar');
-    const errorAlert = document.getElementById('errorAlert');
-    const successAlert = document.getElementById('successAlert');
-    const form = document.getElementById('reportForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const btnSpinner = document.getElementById('btnSpinner');
-    const btnText = document.getElementById('btnText');
 
-    // تأثيرات السحب والإفلات
-    ['dragenter', 'dragover'].forEach(name => {
-      ocrBox.addEventListener(name, (e) => { e.preventDefault(); ocrBox.classList.add('dragover'); });
-    });
-    ['dragleave', 'drop'].forEach(name => {
-      ocrBox.addEventListener(name, (e) => { e.preventDefault(); ocrBox.classList.remove('dragover'); });
-    });
+    ['dragenter', 'dragover'].forEach(n => ocrBox.addEventListener(n, (e) => { e.preventDefault(); ocrBox.classList.add('dragover'); }));
+    ['dragleave', 'drop'].forEach(n => ocrBox.addEventListener(n, (e) => { e.preventDefault(); ocrBox.classList.remove('dragover'); }));
 
-    // معالجة فحص الإيصال بسلاسة مع مؤشر التقدم
     receiptInput.addEventListener('change', async function(e) {
       const file = e.target.files[0];
       if (!file) return;
 
       ocrSub.innerText = file.name;
       ocrStatus.className = "ocr-status processing";
-      ocrStatus.innerHTML = `<span>جاري قراءة البيانات من الإيصال...</span>`;
+      ocrStatus.innerText = "جاري قراءة البيانات من الإيصال...";
       progressWrap.style.display = 'block';
       progressBar.style.width = '15%';
 
@@ -446,108 +774,31 @@
         progressBar.style.width = '100%';
 
         // استخراج المبلغ
-        const amountMatch = text.match(/([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]+)?|[0-9]+(?:\.[0-9]+)?)\s*(?:SDG|ج\.س|جنيه)/i) || 
-                            text.match(/(?:المبلغ|Amount)[:\s]*([0-9,.]+)/i);
+        const amountMatch = text.match(/([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]+)?|[0-9]+(?:\.[0-9]+)?)\s*(?:SDG|ج\.س|جنيه)/i) || text.match(/(?:المبلغ|Amount)[:\s]*([0-9,.]+)/i);
         if (amountMatch) {
           const rawAmount = amountMatch[1].replace(/,/g, '');
           if (!isNaN(rawAmount) && parseFloat(rawAmount) > 0) {
-            const amtElem = document.getElementById('amount');
-            amtElem.value = parseFloat(rawAmount);
-            highlightField(amtElem);
+            document.getElementById('amount-sent').value = parseFloat(rawAmount);
           }
         }
 
         // استخراج الرقم المرجعي
-        const refMatch = text.match(/(?:Ref|TRX|المرجعي|رقم العملية|Reference)[:\s#]*([0-9]{6,16})/i) || 
-                         text.match(/\b([0-9]{10,14})\b/);
+        const refMatch = text.match(/(?:Ref|TRX|المرجعي|رقم العملية|Reference)[:\s#]*([0-9]{6,16})/i) || text.match(/\b([0-9]{10,14})\b/);
         if (refMatch) {
-          const refElem = document.getElementById('refId');
-          refElem.value = refMatch[1];
-          highlightField(refElem);
+          document.getElementById('refId-sent').value = refMatch[1];
         }
 
         setTimeout(() => {
           progressWrap.style.display = 'none';
           ocrStatus.className = "ocr-status success";
-          ocrStatus.innerHTML = `<span>تم الفحص واستخراج البيانات بنجاح ✅</span>`;
-        }, 400);
+          ocrStatus.innerText = "تم الفحص واستخراج البيانات بنجاح ✅";
+        }, 300);
 
       } catch (err) {
         console.error("OCR Error:", err);
         progressWrap.style.display = 'none';
         ocrStatus.className = "ocr-status error";
-        ocrStatus.innerHTML = `<span>تعذر استخراج النص تلقائياً، يرجى كتابتها يدوياً.</span>`;
-      }
-    });
-
-    // وميض حركي للحقل الذي تمت تعبئته آلياً
-    function highlightField(el) {
-      el.style.borderColor = 'var(--success)';
-      el.style.boxShadow = '0 0 0 3px var(--success-glow)';
-      setTimeout(() => {
-        el.style.borderColor = '';
-        el.style.boxShadow = '';
-      }, 1500);
-    }
-
-    // تجزئة رقم المعاملة (SHA-256)
-    async function hashTransaction(refId) {
-      const msgUint8 = new TextEncoder().encode(refId.trim());
-      const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    // إرسال البلاغ
-    form.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      errorAlert.style.display = 'none';
-      successAlert.style.display = 'none';
-
-      submitBtn.disabled = true;
-      btnSpinner.style.display = 'inline-block';
-      btnText.innerText = "جاري التحقق والتأكيد...";
-
-      const bank = document.getElementById('bankName').value;
-      const ref = document.getElementById('refId').value.trim();
-      const amountVal = parseFloat(document.getElementById('amount').value);
-      const dateVal = document.getElementById('txDate').value;
-      const phoneVal = document.getElementById('contactPhone').value.trim();
-
-      try {
-        const txHash = await hashTransaction(ref);
-        const refCode = "RJ-" + Math.random().toString(36).substring(2, 6).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
-
-        const { error } = await supabaseClient
-          .from('transfer_reports')
-          .insert([
-            {
-              report_type: 'sent',
-              bank_text: bank,
-              transaction_hash: txHash,
-              amount: amountVal,
-              transaction_date: dateVal,
-              phone_encrypted: phoneVal,
-              ref_code: refCode,
-              status: 'pending'
-            }
-          ]);
-
-        if (error) throw error;
-
-        successAlert.style.display = 'block';
-        successAlert.innerHTML = `<strong>تم تسجيل البلاغ بنجاح!</strong><br>كود المتابعة الخاص بك: <strong style="color:#fff; text-decoration: underline;">${refCode}</strong>`;
-        form.reset();
-        dateInput.value = today;
-        ocrStatus.style.display = 'none';
-        ocrSub.innerText = "اسحب صورة الإيصال هنا أو اضغط للاختيار (PNG/JPG)";
-      } catch (err) {
-        console.error("Save Error:", err);
-        errorAlert.style.display = 'block';
-        errorAlert.innerText = "حدث خطأ أثناء حفظ البلاغ في السيرفر. يرجى مراجعة الاتصال وإعادة المحاولة.";
-      } finally {
-        submitBtn.disabled = false;
-        btnSpinner.style.display = 'none';
-        btnText.innerText = "تسجيل وتأكيد البلاغ";
+        ocrStatus.innerText = "تعذر استخراج النص تلقائياً، يرجى كتابتها يدوياً.";
       }
     });
   </script>
