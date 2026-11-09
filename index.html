@@ -33,6 +33,18 @@
     .view-section.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   </style>
+
+  <!-- كود تشغيل الواجهة (مفصول هنا لضمان عمل الأزرار دائماً) -->
+  <script>
+    function showView(viewId) {
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+      const err = document.getElementById('errorAlert');
+      const succ = document.getElementById('successAlert');
+      if(err) err.classList.add('hidden');
+      if(succ) succ.classList.add('hidden');
+      document.getElementById(`view-${viewId}`).classList.add('active');
+    }
+  </script>
 </head>
 <body class="min-h-screen pb-16">
 
@@ -164,4 +176,277 @@
               <label class="block text-gray-300 text-sm font-medium mb-2">رقم هاتف للتواصل (واتساب)</label>
               <input type="tel" id="phone-sent" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 focus:border-red-500 transition" placeholder="09xxxxxxxx" required>
             </div>
-            <button type="submit" id="btnSub-sent" class="w-full bg-red-600 hover
+            <button type="submit" id="btnSub-sent" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-xl transition-colors mt-4">
+              تسجيل وتأكيد البلاغ
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- شاشة المُستلم -->
+    <div id="view-receiver" class="view-section">
+      <div class="max-w-2xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-purple-400">إبلاغ عن استلام مبلغ مجهول</h2>
+          <button onclick="showView('home')" class="text-gray-300 hover:text-white flex items-center gap-1 text-sm bg-cardbg px-4 py-2 rounded-lg border border-gray-700 transition">رجوع →</button>
+        </div>
+        <div class="bg-cardbg border border-gray-700 rounded-2xl p-6 shadow-2xl">
+          <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-6">
+            <p class="text-amber-200 text-sm"><strong class="text-amber-400">تنبيه:</strong> يمكنك الحصول على الرقم المرجعي والمبلغ من كشف الحساب أو الرسالة النصية.</p>
+          </div>
+          <form onsubmit="handleFormSubmit(event, 'received')" class="space-y-4">
+            <div>
+              <label class="block text-gray-300 text-sm font-medium mb-2">البنك أو المحفظة</label>
+              <select id="bank-received" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 focus:border-purple-500 transition" required>
+                <option value="بنكك (بنك الخرطوم)">بنكك (بنك الخرطوم)</option>
+                <option value="أو كاش (بنك أمدرمان الوطني)">أو كاش (بنك أمدرمان الوطني)</option>
+                <option value="فوري (بنك فيصل)">فوري (بنك فيصل)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-gray-300 text-sm font-medium mb-2">الرقم المرجعي (Ref ID)</label>
+              <input type="text" id="ref-received" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 focus:border-purple-500 transition" required>
+            </div>
+            <div>
+              <label class="block text-gray-300 text-sm font-medium mb-2">المبلغ المستلم بدقة</label>
+              <input type="number" id="amt-received" step="any" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 focus:border-purple-500 transition" required>
+            </div>
+            <div>
+              <label class="block text-gray-300 text-sm font-medium mb-2">تاريخ الاستلام</label>
+              <input type="date" id="date-received" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 focus:border-purple-500 transition" required>
+            </div>
+            <div>
+              <label class="block text-gray-300 text-sm font-medium mb-2">رقم الهاتف (واتساب)</label>
+              <input type="tel" id="phone-received" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 focus:border-purple-500 transition" required>
+            </div>
+            <button type="submit" id="btnSub-received" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3.5 rounded-xl transition-colors mt-4">
+              تسجيل وتأكيد البلاغ
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- شاشة التتبع -->
+    <div id="view-track" class="view-section">
+      <div class="max-w-2xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-blue-400">تتبع حالة البلاغ والمطابقة</h2>
+          <button onclick="showView('home')" class="text-gray-300 hover:text-white flex items-center gap-1 text-sm bg-cardbg px-4 py-2 rounded-lg border border-gray-700 transition">رجوع →</button>
+        </div>
+        <div class="bg-cardbg border border-gray-700 rounded-2xl p-6 shadow-2xl">
+          <div class="space-y-4">
+            <input type="text" id="trackCode" class="w-full bg-inputbg border border-gray-600 text-white rounded-xl px-4 py-3 uppercase tracking-widest font-bold text-center" placeholder="أدخل كود البلاغ (RJ-XXXX-XXXX)">
+            <button type="button" id="btnTrack" onclick="trackMyReport()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-colors">
+              فحص الحالة الآن
+            </button>
+          </div>
+          <div id="trackResult" class="mt-6"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- كود قاعدة البيانات والعمليات -->
+  <script>
+    const SUPABASE_URL = "https://cdxystrudncncrppmxjp.supabase.co";
+    // المفتاح تم إضافته بنجاح
+    const SUPABASE_ANON_KEY = "sb_publishable_SqFxr_F9uKfNChAtWa9sAA_oNWLXHHx"; 
+    
+    let supabaseClient;
+    try {
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch(e) {
+        console.error("Supabase Init Error:", e);
+    }
+
+    const GREEN_ID_INSTANCE = "ضع_الـ_ID_هنا";
+    const GREEN_API_TOKEN = "ضع_الـ_TOKEN_هنا";
+
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('date-sent').value = today;
+    document.getElementById('date-received').value = today;
+
+    async function sendWhatsAppNotification(phone, messageText) {
+      if (!phone || GREEN_ID_INSTANCE.includes("ضع_الـ")) return;
+      let cleanPhone = phone.replace(/[^0-9]/g, '');
+      if (cleanPhone.startsWith('0')) cleanPhone = '249' + cleanPhone.substring(1);
+      if (!cleanPhone.startsWith('249')) cleanPhone = '249' + cleanPhone;
+      try {
+        await fetch(`https://api.green-api.com/waInstance${GREEN_ID_INSTANCE}/sendMessage/${GREEN_API_TOKEN}`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chatId: `${cleanPhone}@c.us`, message: messageText })
+        });
+      } catch (err) {}
+    }
+
+    async function hashTransaction(refId) {
+      const msgUint8 = new TextEncoder().encode(refId.trim());
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function handleFormSubmit(e, type) {
+      e.preventDefault();
+      const errBox = document.getElementById('errorAlert');
+      const succBox = document.getElementById('successAlert');
+      const btn = document.getElementById(`btnSub-${type}`);
+      errBox.classList.add('hidden');
+      succBox.classList.add('hidden');
+
+      btn.disabled = true;
+      btn.innerText = "جاري الحفظ والتحقق...";
+
+      const bank = document.getElementById(`bank-${type}`).value;
+      const ref = document.getElementById(`ref-${type}`).value.trim();
+      const amountVal = parseFloat(document.getElementById(`amt-${type}`).value);
+      const dateVal = document.getElementById(`date-${type}`).value;
+      const phoneVal = document.getElementById(`phone-${type}`).value.trim();
+
+      try {
+        const txHash = await hashTransaction(ref);
+        const refCode = "RJ-" + Math.random().toString(36).substring(2, 6).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
+
+        const { error } = await supabaseClient
+          .from('transfer_reports')
+          .insert([{
+            report_type: type, bank_text: bank, transaction_hash: txHash,
+            amount: amountVal, transaction_date: dateVal, phone_encrypted: phoneVal,
+            ref_code: refCode, status: 'pending'
+          }]);
+
+        if (error) throw error; 
+
+        succBox.classList.remove('hidden');
+        succBox.innerHTML = `<strong>تم تسجيل البلاغ بنجاح!</strong><br>كود المتابعة: <span class="bg-emerald-900/50 px-2 py-1 rounded mx-1">${refCode}</span>`;
+        e.target.reset();
+        document.getElementById(`date-${type}`).value = today;
+
+        const oppositeType = type === 'sent' ? 'received' : 'sent';
+        const { data: matchedReports } = await supabaseClient
+          .from('transfer_reports').select('*').eq('transaction_hash', txHash).eq('report_type', oppositeType).limit(1);
+
+        if (matchedReports && matchedReports.length > 0) {
+          sendWhatsAppNotification(phoneVal, `منصة رجّعها: تطابق بلاغك! كود: ${refCode}`);
+          sendWhatsAppNotification(matchedReports[0].phone_encrypted, `منصة رجّعها: سجل الطرف الآخر البلاغ! كود: ${matchedReports[0].ref_code}`);
+        }
+
+      } catch (err) {
+        errBox.classList.remove('hidden');
+        const errorMsg = err.message || err.details || JSON.stringify(err);
+        errBox.innerHTML = `<strong>الخطأ من قاعدة البيانات:</strong><br><span dir="ltr" class="text-xs font-mono text-left inline-block mt-1">${errorMsg}</span>`;
+        console.error("Supabase Error:", err);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "تسجيل وتأكيد البلاغ";
+      }
+    }
+
+    async function trackMyReport() {
+      const code = document.getElementById('trackCode').value.trim().toUpperCase();
+      const resDiv = document.getElementById('trackResult');
+      const btn = document.getElementById('btnTrack');
+      resDiv.innerHTML = "";
+      if (!code) return;
+
+      btn.disabled = true;
+      btn.innerText = "جاري الفحص...";
+
+      try {
+        const { data: myReports, error } = await supabaseClient.from('transfer_reports').select('*').eq('ref_code', code).limit(1);
+        if (error) throw error;
+        if (!myReports || myReports.length === 0) {
+          resDiv.innerHTML = `<div class="text-center text-red-400 bg-red-500/10 p-4 rounded-xl border border-red-500/30">لم يتم العثور على أي بلاغ بهذا الكود.</div>`;
+          return;
+        }
+
+        const report = myReports[0];
+        const oppositeType = report.report_type === 'sent' ? 'received' : 'sent';
+        const { data: matches } = await supabaseClient.from('transfer_reports').select('*').eq('transaction_hash', report.transaction_hash).eq('report_type', oppositeType).limit(1);
+        const isMatched = matches && matches.length > 0;
+        const otherParty = isMatched ? matches[0] : null;
+
+        let contactHtml = "";
+        if (isMatched) {
+          let phoneClean = otherParty.phone_encrypted.replace(/[^0-9]/g, '');
+          if (phoneClean.startsWith('0')) phoneClean = '249' + phoneClean.substring(1);
+          if (!phoneClean.startsWith('249')) phoneClean = '249' + phoneClean;
+          contactHtml = `
+            <div class="mt-4 pt-4 border-t border-gray-700 text-center">
+              <p class="text-gray-300 text-sm mb-3">تم التطابق! رقم هاتف الطرف الآخر: <strong class="text-emerald-400 font-bold">${otherParty.phone_encrypted}</strong></p>
+              <a href="https://wa.me/${phoneClean}?text=${encodeURIComponent('السلام عليكم، بخصوص التحويل (كود: ' + code + ')')}" target="_blank" class="block w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl">مراسلة عبر واتساب</a>
+            </div>`;
+        }
+
+        resDiv.innerHTML = `
+          <div class="bg-inputbg border border-gray-700 rounded-xl p-5">
+            <div class="flex justify-between mb-3"><span class="text-gray-400">الحالة:</span>${isMatched ? '<span class="text-emerald-400">تطابق مؤكد ✅</span>' : '<span class="text-amber-400">قيد الانتظار ⏳</span>'}</div>
+            <div class="flex justify-between mb-3"><span class="text-gray-400">النوع:</span><span class="text-white">${report.report_type === 'sent' ? 'مُرسل' : 'مُستلم'}</span></div>
+            <div class="flex justify-between mb-3"><span class="text-gray-400">البنك:</span><span class="text-white">${report.bank_text}</span></div>
+            <div class="flex justify-between mb-3"><span class="text-gray-400">المبلغ:</span><span class="text-white">${report.amount} جنيه</span></div>
+            ${contactHtml}
+          </div>`;
+      } catch (err) {
+        resDiv.innerHTML = `<div class="text-center text-red-400">حدث خطأ في فحص البلاغ.</div>`;
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "فحص الحالة الآن";
+      }
+    }
+
+    const receiptInput = document.getElementById('receiptUpload');
+    const ocrStatus = document.getElementById('ocrStatus');
+    const progressWrap = document.getElementById('ocrProgressWrap');
+    const progressBar = document.getElementById('ocrProgressBar');
+
+    receiptInput.addEventListener('change', async function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      ocrStatus.className = "text-xs mt-2 font-bold text-amber-400";
+      ocrStatus.innerText = "جاري الفحص واستخراج البيانات...";
+      progressWrap.classList.remove('hidden');
+      progressBar.style.width = '15%';
+
+      try {
+        const worker = await Tesseract.createWorker('ara+eng', 1, {
+          logger: m => { if (m.status === 'recognizing text') progressBar.style.width = `${Math.max(15, Math.round(m.progress * 100))}%`; }
+        });
+
+        const ret = await worker.recognize(file);
+        const text = ret.data.text;
+        await worker.terminate();
+        progressBar.style.width = '100%';
+
+        const amountMatch = text.match(/(?:المبلغ|Amount|المبلغ المحول)[:\s\-]*([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]+)?)/i) || text.match(/([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]+)?)\s*(?:SDG|ج\.س|جنيه)/i);
+        if (amountMatch) {
+          const rawAmount = amountMatch[1].replace(/,/g, '');
+          if (!isNaN(rawAmount) && parseFloat(rawAmount) > 0) {
+            document.getElementById('amt-sent').value = parseFloat(rawAmount);
+            document.getElementById('amt-sent').classList.add('border-emerald-500');
+          }
+        }
+
+        const refMatch = text.match(/(?:الرقم المرجعي|رقم العملية|Transaction ID|Ref ID|TRX)[:\s\-#]*([A-Za-z0-9]{8,18})/i) || text.match(/\b(21[0-9]{9,12})\b/);
+        if (refMatch) {
+          document.getElementById('ref-sent').value = refMatch[1];
+          document.getElementById('ref-sent').classList.add('border-emerald-500');
+        }
+
+        setTimeout(() => {
+          progressWrap.classList.add('hidden');
+          ocrStatus.className = "text-xs mt-2 font-bold text-emerald-400";
+          ocrStatus.innerText = "تم الفحص وتعبئة البيانات بنجاح ✅";
+        }, 400);
+
+      } catch (err) {
+        progressWrap.classList.add('hidden');
+        ocrStatus.className = "text-xs mt-2 font-bold text-red-400";
+        ocrStatus.innerText = "تعذر الفحص، يرجى الكتابة يدوياً.";
+      }
+    });
+  </script>
+</body>
+</html>
